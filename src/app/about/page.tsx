@@ -16,7 +16,7 @@ export default function AboutPage() {
         <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
           Setiap musim kemarau, asap karhutla menutup langit Sumatera dan Kalimantan. Orang tua
           bingung: apakah aman mengirim anak ke sekolah? Kepala sekolah butuh rekomendasi berbasis
-          data, bukan perkiraan. EduAir mengubah data satelit dan kualitas udara menjadi
+          data, bukan perkiraan. PyroAlert Karhutla '26 mengubah data satelit dan kualitas udara menjadi
           keputusan yang jelas.
         </p>
       </Card>
@@ -79,7 +79,7 @@ export default function AboutPage() {
       </Card>
 
       <p className="text-xs text-slate-400 text-center">
-        EduAir adalah proyek riset terbuka. Kode sumber tersedia di GitHub.
+        PyroAlert Karhutla &apos;26 adalah proyek riset terbuka. Kode sumber tersedia di GitHub.
       </p>
     </div>
   );

@@ -95,7 +95,7 @@ export default async function SchoolPublicPage({ params }: Props) {
           pengganti BMKG/BNPB.
         </p>
         <Link href="/" className="mt-4 block text-sm text-zinc-500 underline">
-          Buka EduAir lengkap →
+          Buka PyroAlert lengkap &rarr;
         </Link>
       </div>
     </div>

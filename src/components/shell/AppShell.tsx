@@ -50,9 +50,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             <input type="checkbox" checked={lowData} onChange={e => setLowData(e.target.checked)}
               className="w-5 h-5 rounded accent-blue-500 flex-shrink-0" />
           </label>
-          <a href="/about"
-            className="text-sm text-blue-600 border-t border-slate-100 pt-3">
-            Tentang EduAir &rarr;
+          <a href="/about" className="text-sm text-blue-600 border-t border-slate-100 pt-3">
+            Tentang PyroAlert &rarr;
           </a>
         </div>
       </Sheet>

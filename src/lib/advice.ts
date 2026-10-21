@@ -25,7 +25,7 @@ export function buildAnnouncement(p: { school: string; city: string; ispu: numbe
     `Status kegiatan belajar: ${p.status.label.toUpperCase()}.`,
     `Dasar: ${p.status.reason}`,
     "Orang tua dimohon memastikan anak memakai masker yang layak dan membatasi aktivitas luar ruang.",
-    "Sumber data: Open-Meteo (model CAMS) & NASA FIRMS, diolah EduAir. Bukan pengganti informasi resmi BMKG/BNPB.",
+    "Sumber data: Open-Meteo (model CAMS) & NASA FIRMS, diolah PyroAlert Karhutla '26. Bukan pengganti informasi resmi BMKG/BNPB.",
   ].join("\n");
 }
 

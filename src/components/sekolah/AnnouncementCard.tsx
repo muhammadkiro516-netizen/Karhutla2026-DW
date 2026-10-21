@@ -16,7 +16,7 @@ function buildText(p: AnnouncementCardProps): string {
     `Tanggal: ${p.date}`,
     p.ispu != null ? `ISPU: ${p.ispu}` : "",
     p.status.reason, "",
-    "Sumber: EduAir (eduair.vercel.app)",
+    "Sumber: PyroAlert Karhutla '26 (eduair.vercel.app)",
     "Bukan pengganti BMKG/BNPB.",
   ].join("\n");
 }
@@ -38,7 +38,7 @@ export function AnnouncementCard(props: AnnouncementCardProps) {
       </div>
       <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-3">{props.status.reason}</p>
       {props.ispu != null && <p className="text-xs text-slate-400 mb-3">ISPU saat keputusan: {props.ispu}</p>}
-      <p className="hidden print:block text-xs text-slate-400 mt-2">Sumber: EduAir — Bukan pengganti BMKG/BNPB.</p>
+      <p className="hidden print:block text-xs text-slate-400 mt-2">Sumber: PyroAlert Karhutla '26 — Bukan pengganti BMKG/BNPB.</p>
       <div className="flex gap-2 print:hidden mt-3">
         <button onClick={copyText}
           className="flex-1 text-sm border border-slate-200 dark:border-slate-600 rounded-xl py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
