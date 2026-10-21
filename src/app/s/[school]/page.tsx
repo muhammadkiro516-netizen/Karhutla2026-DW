@@ -71,7 +71,7 @@ export default async function SchoolPublicPage({ params }: Props) {
       className="min-h-screen flex flex-col items-center justify-center p-6"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 max-w-sm w-full shadow-xl text-center">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center border border-slate-100 dark:border-slate-700">
         <p className="text-xs text-zinc-500 uppercase tracking-wide mb-1">
           Status Sekolah
         </p>
@@ -82,15 +82,15 @@ export default async function SchoolPublicPage({ params }: Props) {
         >
           {status.label}
         </div>
-        <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4 leading-relaxed">
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
           {status.reason}
         </p>
         {city && (
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-slate-400">
             {city.name} • ISPU diperbarui {air?.updatedLocal ?? "—"}
           </p>
         )}
-        <p className="text-xs text-zinc-400 mt-2">
+        <p className="text-xs text-slate-400 mt-2">
           Rekomendasi mesin — status resmi dari Kepala Sekolah/Dinas. Bukan
           pengganti BMKG/BNPB.
         </p>
