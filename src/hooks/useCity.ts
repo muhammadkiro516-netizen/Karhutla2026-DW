@@ -1,9 +1,19 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CITIES, DEFAULT_CITY, getCity } from "@/config/cities";
 import type { CityId, City } from "@/config/cities";
 import { nearest } from "@/lib/geo";
+
+// Read initial city synchronously (SSR-safe: returns DEFAULT_CITY on server)
+function getInitialCity(): CityId {
+  if (typeof window === "undefined") return DEFAULT_CITY;
+  try {
+    const stored = localStorage.getItem("eduair-city") as CityId | null;
+    if (stored && getCity(stored)) return stored;
+  } catch { /* ignore */ }
+  return DEFAULT_CITY;
+}
 
 export function useCity(): {
   city: City;
@@ -12,34 +22,27 @@ export function useCity(): {
 } {
   const router = useRouter();
   const params = useSearchParams();
-  const [cityId, setCityId] = useState<CityId>(DEFAULT_CITY);
+  // Initialise from localStorage immediately — avoids DEFAULT→stored flicker
+  const [cityId, setCityId] = useState<CityId>(getInitialCity);
+  const didInit = useRef(false);
 
   useEffect(() => {
+    // Only run once per params change, not on every render
     const q = params.get("kota") as CityId | null;
     if (q && getCity(q)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCityId(q);
+      if (q !== cityId) setCityId(q);
+      didInit.current = true;
       return;
     }
-    try {
-      const stored = localStorage.getItem("eduair-city") as CityId | null;
-      if (stored && getCity(stored)) {
-        setCityId(stored);
-        return;
-      }
-    } catch {
-      // ignore storage errors
+    if (!didInit.current) {
+      // Already read from localStorage in useState initialiser
+      didInit.current = true;
     }
-    setCityId(DEFAULT_CITY);
-  }, [params]);
+  }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setCity = (id: CityId) => {
     setCityId(id);
-    try {
-      localStorage.setItem("eduair-city", id);
-    } catch {
-      // ignore storage errors
-    }
+    try { localStorage.setItem("eduair-city", id); } catch { /* ignore */ }
     router.replace(`?kota=${id}`, { scroll: false });
   };
 

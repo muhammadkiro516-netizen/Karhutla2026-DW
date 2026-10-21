@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // cacheComponents and partialPrefetching removed — incompatible with
-  // `export const revalidate` in route handlers (Next.js 16.x regression).
-  // Cache is managed via Cache-Control headers + in-memory server cache.
+  // Tailwind v4 is handled via PostCSS (@tailwindcss/postcss in postcss.config.mjs).
+  // No turbopack-specific CSS config needed — Next.js 16 auto-detects PostCSS.
 };
 
 export default nextConfig;

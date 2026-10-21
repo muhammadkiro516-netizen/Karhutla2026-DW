@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/shell/AppShell";
 import { SwRegister } from "@/components/shell/SwRegister";
+import { SWRProvider } from "@/components/shell/SWRProvider";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         <SwRegister />
-        <AppShell>{children}</AppShell>
+        <SWRProvider>
+          <AppShell>{children}</AppShell>
+        </SWRProvider>
       </body>
     </html>
   );

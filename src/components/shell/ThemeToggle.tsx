@@ -1,24 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+// Read theme synchronously so initial render matches the DOM (set by the
+// no-flash script in layout.tsx) — avoids sun↔moon flicker on load.
+function getInitialDark(): boolean {
+  if (typeof window === "undefined") return false;
+  return document.documentElement.getAttribute("data-theme") === "dark";
+}
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDark(document.documentElement.getAttribute("data-theme") === "dark");
-  }, []);
+export function ThemeToggle() {
+  const [dark, setDark] = useState<boolean>(getInitialDark);
 
   const toggle = () => {
     const next = !dark;
     setDark(next);
     document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
-    try {
-      localStorage.setItem("eduair-theme", next ? "dark" : "light");
-    } catch {
-      // ignore storage errors
-    }
+    try { localStorage.setItem("eduair-theme", next ? "dark" : "light"); } catch { /* ignore */ }
   };
 
   return (
