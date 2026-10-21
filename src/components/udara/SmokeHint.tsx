@@ -1,5 +1,5 @@
+import { Flame } from "lucide-react";
 import { smokeHint } from "@/lib/attribution";
-import { id } from "@/i18n/id";
 import type { HotspotPayload, AirCity } from "@/types/api";
 
 interface SmokeHintProps {
@@ -18,11 +18,14 @@ export function SmokeHint({ hotspots, air, cityId }: SmokeHintProps) {
   if (!hint.show) return null;
 
   return (
-    <div className="rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/50 dark:to-amber-950/50 border border-orange-200 dark:border-orange-800/50 p-4 shadow-sm">
-      <p className="font-semibold text-orange-700 dark:text-orange-300 mb-1">🔥 Potensi asap</p>
-      <p className="text-sm text-orange-700 dark:text-orange-300">{hint.message}</p>
-      <p className="text-xs mt-2 text-orange-500 dark:text-orange-500">
-        {id.disclaimer.hotspot} {id.disclaimer.drift}
+    <div className="rounded-3xl border border-orange-200 bg-orange-50 p-4 shadow-sm">
+      <div className="flex items-center gap-2 mb-1.5">
+        <Flame size={15} className="text-orange-500 flex-shrink-0" />
+        <p className="text-sm font-bold text-orange-700">Ada titik api di sekitar sini</p>
+      </div>
+      <p className="text-sm text-orange-700 leading-relaxed">{hint.message}</p>
+      <p className="text-xs text-orange-400 mt-2">
+        Titik api dari satelit — belum tentu kebakaran yang terkonfirmasi. Simulasi arah asap sangat sederhana.
       </p>
     </div>
   );

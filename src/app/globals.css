@@ -2,37 +2,38 @@
 @import "leaflet/dist/leaflet.css";
 
 @theme {
-  /* ISPU official colours (P.14/2020) */
   --color-ispu-baik:              #16a34a;
   --color-ispu-sedang:            #2563eb;
-  --color-ispu-tidak-sehat:       #eab308;
+  --color-ispu-tidak-sehat:       #f59e0b;
   --color-ispu-sangat-tidak-sehat:#dc2626;
   --color-ispu-berbahaya:         #111827;
-
-  --color-smoke: #6b7280;
-
-  --radius-card: 1.5rem;
-
-  --font-plus-jakarta: "Plus Jakarta Sans", "Inter", sans-serif;
+  --color-smoke:                  #6b7280;
+  --radius-card:                  1.5rem;
+  --font-plus-jakarta:            "Plus Jakarta Sans", "Inter", sans-serif;
 }
 
-*,*::before,*::after { box-sizing: border-box; }
-
+*, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: var(--font-plus-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #ffffff;
+  color: #0f172a;
 }
 
-.scrollbar-none {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* Dark mode — only when explicitly toggled */
+[data-theme="dark"] {
+  color-scheme: dark;
+  background: #0f172a;
+  color: #f1f5f9;
 }
+
+.scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
 
-/* ── Leaflet ── */
+/* Leaflet */
 .leaflet-container {
   border-radius: var(--radius-card);
   font-family: var(--font-plus-jakarta);
@@ -44,25 +45,23 @@ body {
   border-radius: 0.875rem !important;
   box-shadow: 0 8px 32px rgba(0,0,0,.15) !important;
 }
-.leaflet-popup-content { margin: .75rem 1rem; font-size: .8125rem; line-height:1.5; }
+.leaflet-popup-content { margin: .75rem 1rem; font-size: .8125rem; line-height: 1.5; }
 
-/* ── Map marker helpers ── */
+/* Map markers */
 .marker-fire {
-  display:flex; align-items:center; justify-content:center;
-  width:32px; height:32px; border-radius:50% 50% 50% 0;
-  transform:rotate(-45deg);
-  border:2.5px solid rgba(255,255,255,.9);
-  box-shadow:0 3px 10px rgba(0,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2.5px solid rgba(255,255,255,.9);
+  box-shadow: 0 3px 10px rgba(0,0,0,.3);
 }
-.marker-fire span { transform:rotate(45deg); font-size:15px; line-height:1; }
+.marker-fire span { transform: rotate(45deg); font-size: 14px; line-height: 1; }
 .marker-city {
-  display:flex; align-items:center; justify-content:center;
-  width:20px; height:20px; border-radius:50%;
-  border:3px solid white;
-  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,.3);
 }
 
 @media print {
-  nav,header,.print\:hidden { display:none !important; }
-  .announcement-card { box-shadow:none; border:1px solid #e5e7eb; }
+  nav, header, .print\:hidden { display: none !important; }
+  .announcement-card { box-shadow: none; border: 1px solid #e5e7eb; }
 }

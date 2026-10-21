@@ -2,20 +2,23 @@ import { type ReactNode, Suspense } from "react";
 import { AppShell } from "@/components/shell/AppShell";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-// All tab pages use useSearchParams (via useCity) — they need a Suspense boundary.
-// AppShell lives here so the landing page (/) doesn't get the nav chrome.
+// AppShell has the floating nav (60px) + city chips strip (~48px) = 108px
+// All tab pages use useSearchParams (via useCity) — need Suspense.
 export default function TabsLayout({ children }: { children: ReactNode }) {
   return (
     <AppShell>
-      <Suspense fallback={
-        <div className="p-4 flex flex-col gap-4 bg-gradient-to-b from-sky-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 min-h-screen">
-          <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      }>
-        {children}
-      </Suspense>
+      {/* pt-[108px]: 60px floating nav + 48px city chips */}
+      <div className="pt-[108px]">
+        <Suspense fallback={
+          <div className="px-4 pt-4 flex flex-col gap-4 min-h-screen">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-48 w-full" />
+          </div>
+        }>
+          {children}
+        </Suspense>
+      </div>
     </AppShell>
   );
 }

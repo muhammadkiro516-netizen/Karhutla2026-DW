@@ -6,9 +6,9 @@ import { useCity } from "@/hooks/useCity";
 import { useModes } from "@/hooks/useModes";
 import { AirHero } from "@/components/udara/AirHero";
 import { MetricPills } from "@/components/udara/MetricPills";
-import { TodayAdvice } from "@/components/udara/TodayAdvice";
-import { TomorrowCard } from "@/components/udara/TomorrowCard";
+import { ActionCard } from "@/components/udara/ActionCard";
 import { SmokeHint } from "@/components/udara/SmokeHint";
+import { TomorrowCard } from "@/components/udara/TomorrowCard";
 import { IspuChartLazy } from "@/components/udara/IspuChartLazy";
 import { OtherCities } from "@/components/udara/OtherCities";
 import { ReadAloud } from "@/components/udara/ReadAloud";
@@ -27,30 +27,50 @@ export default function UdaraPage() {
   const status = vulnerable ? airCity?.statusVulnerable : airCity?.status;
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
+    <div className="px-4 pt-4 pb-8 max-w-5xl mx-auto">
       <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:gap-6">
         {/* Left column */}
         <div className="flex flex-col gap-4">
-          <AirHero city={airCity} envelope={airEnv} isLoading={airLoading} error={airError} retry={airRetry} />
+          <AirHero
+            city={airCity}
+            envelope={airEnv}
+            isLoading={airLoading}
+            error={airError}
+            retry={airRetry}
+          />
+
           <MetricPills air={airCity} weather={weatherCity} />
+
+          {/* Personal action card — what to do RIGHT NOW */}
+          <ActionCard
+            cityName={city.name}
+            status={status}
+            weather={weatherCity}
+            vulnerable={vulnerable}
+          />
+
           <SmokeHint hotspots={hotspots} air={airCity} cityId={city.id} />
-          <Card>
-            <TodayAdvice status={status} vulnerable={vulnerable} />
-            {airCity && <TomorrowCard tomorrow={airCity.tomorrow} city={city} />}
-          </Card>
+
+          {airCity && (
+            <TomorrowCard tomorrow={airCity.tomorrow} city={city} />
+          )}
+
           <ReadAloud city={airCity} cityName={city.name} />
         </div>
 
         {/* Right column */}
         <div className="flex flex-col gap-4 mt-4 lg:mt-0">
           <Card>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Grafik ISPU</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
+              Grafik Kualitas Udara
+            </p>
             {airCity ? (
               <IspuChartLazy hourly={airCity.hourly} tzLabel={airCity.tzLabel} />
             ) : airLoading ? (
               <Skeleton className="h-52 w-full" />
             ) : null}
           </Card>
+
           <Card>
             <OtherCities allAir={allAir} />
           </Card>
