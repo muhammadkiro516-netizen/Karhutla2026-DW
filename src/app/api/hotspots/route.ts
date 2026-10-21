@@ -11,7 +11,6 @@ import type { HotspotPayload, RichCluster } from "@/types/api";
 import type { ApiEnvelope, Hotspot, WindHour } from "@/types/domain";
 import sampleData from "@/data/sample-hotspots.json";
 
-export const revalidate = CACHE_SECONDS.hotspots;
 
 function nearestCity(lat: number, lon: number) {
   let best: (typeof CITIES)[number] = CITIES[0];

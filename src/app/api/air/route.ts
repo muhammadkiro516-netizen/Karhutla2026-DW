@@ -8,7 +8,6 @@ import { evaluateSchoolStatus, forecastSchoolDay, statusOf } from "@/lib/school-
 import type { AirCity, AirHourly } from "@/types/api";
 import type { ApiEnvelope, HourlyPoint } from "@/types/domain";
 
-export const revalidate = CACHE_SECONDS.air;
 
 export async function GET() {
   const ttl = CACHE_SECONDS.air;

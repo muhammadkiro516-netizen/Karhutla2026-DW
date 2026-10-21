@@ -8,7 +8,6 @@ import { SEED_HOSPITALS } from "@/data/seed";
 import type { Facility } from "@/types/api";
 import type { ApiEnvelope } from "@/types/domain";
 
-export const revalidate = CACHE_SECONDS.facilities;
 
 const QuerySchema = z.object({ kota: z.string().optional() });
 

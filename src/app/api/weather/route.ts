@@ -6,7 +6,6 @@ import { fetchWeatherAll } from "@/server/openmeteo";
 import type { WeatherCity } from "@/types/api";
 import type { ApiEnvelope } from "@/types/domain";
 
-export const revalidate = CACHE_SECONDS.weather;
 
 export async function GET() {
   const fetchedAt = new Date().toISOString();
