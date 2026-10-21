@@ -1,6 +1,7 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Wind, School, Flame, Tent, Settings, Sun, Moon } from "lucide-react";
 
@@ -12,27 +13,6 @@ const TABS = [
 ];
 
 interface FloatingNavProps { onOpenSettings: () => void }
-
-// Inline SVG logos — no external image dependency
-function NasaLogo() {
-  return (
-    <svg width="36" height="15" viewBox="0 0 80 32" aria-label="NASA" role="img">
-      <rect width="80" height="32" rx="4" fill="#0B3D91"/>
-      <text x="50%" y="22" textAnchor="middle" fontFamily="Arial,sans-serif"
-        fontWeight="900" fontSize="18" fill="white" letterSpacing="2">NASA</text>
-    </svg>
-  );
-}
-
-function BmkgLogo() {
-  return (
-    <svg width="44" height="15" viewBox="0 0 96 32" aria-label="BMKG" role="img">
-      <rect width="96" height="32" rx="4" fill="#1e7a34"/>
-      <text x="50%" y="22" textAnchor="middle" fontFamily="Arial,sans-serif"
-        fontWeight="800" fontSize="16" fill="white" letterSpacing="1">BMKG</text>
-    </svg>
-  );
-}
 
 function NavInner({ onOpenSettings }: FloatingNavProps) {
   const pathname = usePathname();
@@ -59,10 +39,10 @@ function NavInner({ onOpenSettings }: FloatingNavProps) {
     <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-200 ${
       scrolled ? "bg-white/97 backdrop-blur-md shadow-[0_2px_24px_rgba(0,0,0,0.09)]" : "bg-white border-b border-slate-100"
     }`}>
-      <div className="max-w-6xl mx-auto flex items-center gap-2 px-4 h-[60px]">
+      <div className="max-w-6xl mx-auto flex items-center gap-3 px-4 h-[60px]">
 
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0 group mr-3">
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group mr-2">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
             <Flame size={15} className="text-white" />
           </div>
@@ -70,28 +50,27 @@ function NavInner({ onOpenSettings }: FloatingNavProps) {
             <span className="font-black text-slate-900 text-[15px] tracking-tight">
               Pyro<span className="text-orange-500">Alert</span>
             </span>
-            <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">
-              Karhutla &apos;26
-            </span>
+            <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Karhutla &apos;26</span>
           </div>
         </Link>
 
-        {/* Partner logos — NASA & BMKG */}
-        <div className="hidden md:flex items-center gap-2 mr-3">
-          <div className="h-5 w-px bg-slate-200" />
-          <span className="text-[9px] text-slate-300 uppercase tracking-wide font-medium">Data by</span>
+        {/* Data By logos — sejajar, proporsional */}
+        <div className="hidden md:flex items-center gap-2 pl-3 border-l border-slate-200 flex-shrink-0">
+          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">API by</span>
           <a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" rel="noopener noreferrer"
-            title="NASA FIRMS — Real-time satellite fire data" className="opacity-70 hover:opacity-100 transition-opacity">
-            <NasaLogo />
+            title="NASA FIRMS Real-time Fire Data"
+            className="flex items-center hover:opacity-80 transition-opacity">
+            <Image src="/logo-nasa.png" alt="NASA" width={48} height={20} className="object-contain h-5 w-auto" />
           </a>
           <a href="https://bmkg.go.id" target="_blank" rel="noopener noreferrer"
-            title="BMKG — Badan Meteorologi Klimatologi dan Geofisika" className="opacity-70 hover:opacity-100 transition-opacity">
-            <BmkgLogo />
+            title="BMKG — Badan Meteorologi Klimatologi Geofisika"
+            className="flex items-center hover:opacity-80 transition-opacity">
+            <Image src="/logo-bmkg.webp" alt="BMKG" width={40} height={20} className="object-contain h-5 w-auto" />
           </a>
         </div>
 
         {/* Tab links — desktop */}
-        <nav className="hidden lg:flex items-center gap-1 flex-1">
+        <nav className="hidden lg:flex items-center gap-1 flex-1 ml-2">
           {TABS.map(({ href, label, Icon }) => {
             const active = pathname.startsWith(href);
             return (
@@ -109,12 +88,12 @@ function NavInner({ onOpenSettings }: FloatingNavProps) {
         <div className="flex-1 lg:flex-none" />
 
         <button onClick={toggleDark}
-          className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
           aria-label={dark ? "Mode terang" : "Mode gelap"}>
           {dark ? <Sun size={17} /> : <Moon size={17} />}
         </button>
         <button onClick={onOpenSettings}
-          className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
           aria-label="Pengaturan">
           <Settings size={17} />
         </button>

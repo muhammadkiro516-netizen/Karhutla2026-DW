@@ -1,110 +1,109 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Satellite, Wind, School, Flame, ShieldCheck, ArrowDown, MapPin, Clock, Users } from "lucide-react";
+import {
+  ChevronRight, Satellite, Wind, School, Flame, ShieldCheck,
+  ArrowDown, MapPin, Clock, Users, CheckCircle2
+} from "lucide-react";
 
 const FireScene = dynamic(() => import("./FireScene").then(m => m.FireScene), { ssr: false });
 
-// ── Scroll animation hook ──────────────────────────────
-function useInView(threshold = 0.15) {
+/* ── scroll-reveal hook ─────────────────────────────────── */
+function useReveal(threshold = 0.12) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [on, setOn] = useState(false);
   useEffect(() => {
-    if (!ref.current) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold });
-    obs.observe(ref.current);
-    return () => obs.disconnect();
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setOn(true); io.disconnect(); } }, { threshold });
+    io.observe(el);
+    return () => io.disconnect();
   }, [threshold]);
-  return { ref, visible };
+  return { ref, on };
 }
 
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const { ref, visible } = useInView();
+function Reveal({
+  children, delay = 0, from = "bottom", className = ""
+}: {
+  children: React.ReactNode; delay?: number;
+  from?: "bottom" | "left" | "right" | "top"; className?: string;
+}) {
+  const { ref, on } = useReveal();
+  const base = from === "left" ? "translate-x-[-40px]"
+    : from === "right" ? "translate-x-[40px]"
+    : from === "top" ? "translate-y-[-32px]"
+    : "translate-y-8";
   return (
-    <div ref={ref} className={`transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+    <div ref={ref}
+      className={`transition-all duration-700 ease-out ${on ? "opacity-100 translate-x-0 translate-y-0" : `opacity-0 ${base}`} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}>
       {children}
     </div>
   );
 }
 
-// ── Inline logos ──────────────────────────────────────
-function NasaBadge() {
-  return (
-    <span className="inline-flex items-center gap-1.5 bg-[#0B3D91] text-white text-xs font-black px-3 py-1.5 rounded-lg tracking-wider">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity=".2"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-      NASA
-    </span>
-  );
-}
-
-function BmkgBadge() {
-  return (
-    <span className="inline-flex items-center gap-1.5 bg-[#1e7a34] text-white text-xs font-black px-3 py-1.5 rounded-lg tracking-wider">
-      BMKG
-    </span>
-  );
-}
-
-function CamsBadge() {
-  return (
-    <span className="inline-flex items-center gap-1.5 bg-[#003247] text-white text-xs font-black px-3 py-1.5 rounded-lg tracking-wider">
-      Copernicus
-    </span>
-  );
-}
-
-function OsmBadge() {
-  return (
-    <span className="inline-flex items-center gap-1.5 bg-[#7EBC6F] text-white text-xs font-black px-3 py-1.5 rounded-lg tracking-wider">
-      OpenStreetMap
-    </span>
-  );
-}
-
-// ── Counter animation ─────────────────────────────────
-function AnimatedNumber({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const { ref, visible } = useInView(0.3);
-  const [val, setVal] = useState(0);
+/* ── animated counter ───────────────────────────────────── */
+function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const { ref, on } = useReveal(0.3);
+  const [v, setV] = useState(0);
   useEffect(() => {
-    if (!visible) return;
-    let cur = 0;
-    const step = target / 40;
-    const id = setInterval(() => {
-      cur = Math.min(cur + step, target);
-      setVal(Math.round(cur));
-      if (cur >= target) clearInterval(id);
-    }, 30);
+    if (!on) return;
+    let c = 0; const step = to / 50;
+    const id = setInterval(() => { c = Math.min(c + step, to); setV(Math.round(c)); if (c >= to) clearInterval(id); }, 25);
     return () => clearInterval(id);
-  }, [visible, target]);
-  return <span ref={ref}>{val.toLocaleString("id-ID")}{suffix}</span>;
+  }, [on, to]);
+  return <span ref={ref}>{v.toLocaleString("id-ID")}{suffix}</span>;
 }
 
-// ── Flow step component ───────────────────────────────
-function FlowStep({ n, icon, title, body, color }: { n: string; icon: React.ReactNode; title: string; body: string; color: string }) {
+/* ── partner logo strip ─────────────────────────────────── */
+function PartnerStrip({ dark = false }: { dark?: boolean }) {
+  const base = dark
+    ? "text-slate-500 border-slate-700"
+    : "text-slate-400 border-slate-200";
   return (
-    <div className={`relative flex gap-4 p-5 rounded-3xl border ${color} bg-white`}>
-      <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center text-sm font-black">
-        {n}
-      </div>
-      <div>
-        <div className="flex items-center gap-2 mb-1">{icon}<p className="font-bold text-slate-800">{title}</p></div>
-        <p className="text-sm text-slate-500 leading-relaxed">{body}</p>
-      </div>
+    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+      <span className={`text-[10px] font-bold uppercase tracking-widest ${dark ? "text-slate-500" : "text-slate-400"}`}>
+        Didukung data dari
+      </span>
+
+      <a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" rel="noopener noreferrer"
+        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
+        <Image src="/logo-nasa.png" alt="NASA" width={52} height={20} className="object-contain h-5 w-auto" />
+        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>FIRMS VIIRS</span>
+      </a>
+
+      <a href="https://bmkg.go.id" target="_blank" rel="noopener noreferrer"
+        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
+        <Image src="/logo-bmkg.webp" alt="BMKG" width={44} height={20} className="object-contain h-5 w-auto" />
+        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>Referensi ISPU</span>
+      </a>
+
+      <a href="https://atmosphere.copernicus.eu" target="_blank" rel="noopener noreferrer"
+        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
+        <span className="text-xs font-black text-sky-500">Copernicus</span>
+        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>CAMS PM2.5</span>
+      </a>
+
+      <a href="https://openstreetmap.org" target="_blank" rel="noopener noreferrer"
+        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
+        <span className="text-xs font-black text-emerald-500">OSM</span>
+        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>Fasilitas</span>
+      </a>
     </div>
   );
 }
 
 export function LandingPage() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setTimeout(() => setVisible(true), 80); }, []);
+  const [heroOn, setHeroOn] = useState(false);
+  useEffect(() => { setTimeout(() => setHeroOn(true), 60); }, []);
 
   return (
     <div className="bg-white text-slate-900 overflow-x-hidden">
 
-      {/* ══ NAV ═══════════════════════════════════════════════════ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100">
+      {/* ══ STICKY NAV ══════════════════════════════════════════ */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/97 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-5 h-[60px]">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
@@ -114,10 +113,11 @@ export function LandingPage() {
               <span className="font-black text-slate-900 text-[15px]">Pyro<span className="text-orange-500">Alert</span></span>
               <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Karhutla &apos;26</span>
             </div>
-            <div className="hidden md:flex items-center gap-2 ml-3 pl-3 border-l border-slate-200">
-              <NasaBadge />
-              <BmkgBadge />
-              <CamsBadge />
+            {/* Logo row — sejajar dalam satu baris */}
+            <div className="hidden md:flex items-center gap-3 ml-4 pl-4 border-l border-slate-200">
+              <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest whitespace-nowrap">API by</span>
+              <Image src="/logo-nasa.png" alt="NASA" width={44} height={18} className="object-contain h-[18px] w-auto opacity-70 hover:opacity-100 transition-opacity" />
+              <Image src="/logo-bmkg.webp" alt="BMKG" width={36} height={18} className="object-contain h-[18px] w-auto opacity-70 hover:opacity-100 transition-opacity" />
             </div>
           </div>
           <Link href="/udara" className="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105 shadow-lg">
@@ -126,95 +126,73 @@ export function LandingPage() {
         </div>
       </header>
 
-      {/* ══ HERO ══════════════════════════════════════════════════ */}
+      {/* ══ HERO ════════════════════════════════════════════════ */}
       <section className="relative h-screen min-h-[640px] flex flex-col items-center justify-center overflow-hidden pt-[60px]">
         <FireScene />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/85 z-10" />
-
-        <div className={`relative z-20 text-center px-5 max-w-3xl mx-auto transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-1.5 rounded-full text-xs font-bold mb-6 backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-            Data satelit NASA aktif — {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-black/80 z-10" />
+        <div className={`relative z-20 text-center px-5 max-w-3xl mx-auto transition-all duration-800 ${heroOn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}>
+          <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-1.5 rounded-full text-xs font-bold mb-6 backdrop-blur-sm animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-red-400" />
+            Satelit NASA aktif — data diperbarui setiap 15 menit
           </div>
-
-          <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-4 drop-shadow-2xl">
+          <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-3 drop-shadow-2xl">
             Pyro<span className="text-orange-400">Alert</span>
             <br />
-            <span className="text-3xl md:text-4xl font-light text-white/70">Karhutla &apos;26</span>
+            <span className="text-3xl md:text-4xl font-light text-white/60">Karhutla &apos;26</span>
           </h1>
-
           <p className="text-lg md:text-xl text-white/85 mb-3 leading-relaxed">
-            Sistem peringatan kebakaran hutan real-time berbasis<br className="hidden md:block" />
-            satelit NASA, kualitas udara Copernicus, dan cuaca BMKG
+            Sistem peringatan kebakaran hutan real-time.<br className="hidden md:block" />
+            Satelit NASA · Udara Copernicus · Referensi BMKG
           </p>
-
-          <p className="text-sm text-white/55 mb-10 max-w-xl mx-auto">
-            Untuk orang tua, kepala sekolah, petugas posko, dan warga terdampak asap di Kalimantan & Sumatera.
+          <p className="text-sm text-white/50 mb-10 max-w-xl mx-auto">
+            Untuk orang tua, kepala sekolah, petugas posko, dan warga terdampak asap di Kalimantan &amp; Sumatera.
           </p>
-
+          {/* Partner logos di hero */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <Image src="/logo-nasa.png" alt="NASA" width={56} height={22} className="object-contain h-6 w-auto opacity-60 brightness-200" />
+            <span className="text-white/20">·</span>
+            <Image src="/logo-bmkg.webp" alt="BMKG" width={48} height={22} className="object-contain h-6 w-auto opacity-60 brightness-200" />
+            <span className="text-white/20">·</span>
+            <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Copernicus CAMS</span>
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/udara"
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white px-8 py-4 rounded-2xl text-base font-bold shadow-2xl shadow-orange-500/40 hover:scale-105 transition-all">
-              Pantau Sekarang
-              <ChevronRight size={18} />
+              Pantau Sekarang <ChevronRight size={18} />
             </Link>
             <Link href="/titik-api"
               className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-2xl text-base font-semibold transition-all hover:scale-105 backdrop-blur-sm">
-              <Satellite size={18} />
-              Lihat Peta Satelit
+              <Satellite size={18} /> Peta Satelit
             </Link>
           </div>
         </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white/40 animate-bounce">
-          <ArrowDown size={24} />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white/30 animate-bounce">
+          <ArrowDown size={22} />
         </div>
       </section>
 
-      {/* ══ DATA PARTNERS STRIP ═══════════════════════════════════ */}
-      <section className="bg-slate-950 border-y border-slate-800 py-5 px-5">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-6">
-          <span className="text-xs text-slate-500 uppercase tracking-widest font-bold">Sumber Data Resmi</span>
-          <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <NasaBadge />
-            <span className="text-xs text-slate-400">FIRMS VIIRS — 3 satelit</span>
-          </div>
-          <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <CamsBadge />
-            <span className="text-xs text-slate-400">CAMS Air Quality</span>
-          </div>
-          <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <BmkgBadge />
-            <span className="text-xs text-slate-400">Referensi ambang batas</span>
-          </div>
-          <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-            <OsmBadge />
-            <span className="text-xs text-slate-400">Fasilitas kesehatan</span>
-          </div>
-        </div>
+      {/* ══ DATA PARTNER STRIP (putih, sejajar) ════════════════ */}
+      <section className="py-8 px-5 bg-slate-50 border-y border-slate-100">
+        <Reveal>
+          <PartnerStrip dark={false} />
+        </Reveal>
       </section>
 
-      {/* ══ STATS ═════════════════════════════════════════════════ */}
+      {/* ══ STATS ═══════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-white">
         <div className="max-w-5xl mx-auto">
-          <Reveal>
-            <p className="text-center text-xs font-bold text-orange-500 uppercase tracking-widest mb-2">Fakta Karhutla 2023</p>
-            <h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-12">
-              Satu musim kemarau.<br />Ribuan jam udara berbahaya.
-            </h2>
-          </Reveal>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <Reveal><p className="text-center text-xs font-bold text-orange-500 uppercase tracking-widest mb-2">Fakta Karhutla 2023</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-12">Satu musim kemarau.<br />Ribuan jam udara berbahaya.</h2></Reveal>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
-              { n: 253, suffix: " jam", label: "Daring Darurat di Palangka Raya (Sep–Okt 2023)", color: "text-red-500" },
-              { n: 40,  suffix: " klaster", label: "Titik api aktif terdeteksi rata-rata per hari", color: "text-orange-500" },
-              { n: 128, suffix: " sekolah", label: "Sekolah dipantau di 8 kota rawan karhutla", color: "text-blue-600" },
-              { n: 8,   suffix: " kota", label: "Kota dipantau dari Pekanbaru hingga Bandung", color: "text-emerald-600" },
+              { n: 253, s: " jam",     label: "Daring Darurat di Palangka Raya (Sep–Okt 2023)", c: "text-red-500" },
+              { n: 40,  s: " klaster", label: "Titik api aktif terdeteksi rata-rata per hari", c: "text-orange-500" },
+              { n: 128, s: " sekolah", label: "Sekolah dipantau di 8 kota rawan karhutla", c: "text-blue-600" },
+              { n: 8,   s: " kota",    label: "Kota dari Pekanbaru hingga Bandung", c: "text-emerald-600" },
             ].map((s, i) => (
               <Reveal key={i} delay={i * 80}>
-                <div className="text-center p-6 rounded-3xl bg-slate-50 border border-slate-100">
-                  <p className={`text-4xl font-black mb-2 ${s.color}`}>
-                    <AnimatedNumber target={s.n} suffix={s.suffix} />
-                  </p>
+                <div className="text-center p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all">
+                  <p className={`text-4xl font-black mb-2 ${s.c}`}><Counter to={s.n} suffix={s.s} /></p>
                   <p className="text-xs text-slate-500 leading-relaxed">{s.label}</p>
                 </div>
               </Reveal>
@@ -223,111 +201,99 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══ STORY: MASALAH ════════════════════════════════════════ */}
+      {/* ══ MASALAH ════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-gradient-to-br from-orange-50 to-red-50">
         <div className="max-w-4xl mx-auto">
-          <Reveal>
-            <p className="text-xs font-bold text-red-500 uppercase tracking-widest mb-3">Masalah Nyata</p>
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-6 leading-tight">
-              Setiap September, pertanyaan yang sama selalu muncul:
-            </h2>
-          </Reveal>
-          <div className="grid md:grid-cols-3 gap-5 mt-8">
+          <Reveal from="left"><p className="text-xs font-bold text-red-500 uppercase tracking-widest mb-3">Masalah Nyata</p></Reveal>
+          <Reveal delay={60}><h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 leading-tight">Setiap September, pertanyaan yang<br />sama selalu muncul:</h2></Reveal>
+          <div className="grid md:grid-cols-3 gap-5">
             {[
-              { Icon: Users, q: '"Apakah aman kirim anak ke sekolah hari ini?"', who: "Orang tua & wali murid", color: "border-orange-200 bg-orange-50" },
-              { Icon: School, q: '"Data mana yang saya pakai untuk memutuskan meliburkan sekolah?"', who: "Kepala Sekolah & Dinas", color: "border-blue-200 bg-blue-50" },
-              { Icon: Wind, q: '"Dari arah mana asap datang dan seberapa cepat?"', who: "Petugas posko & relawan", color: "border-red-200 bg-red-50" },
+              { Icon: Users, q: '"Apakah aman kirim anak ke sekolah hari ini?"', who: "Orang tua & wali murid", color: "border-orange-200 bg-white" },
+              { Icon: School, q: '"Data mana yang saya pakai untuk memutuskan meliburkan sekolah?"', who: "Kepala Sekolah & Dinas", color: "border-blue-200 bg-white" },
+              { Icon: Wind, q: '"Dari arah mana asap datang dan seberapa cepat?"', who: "Petugas posko & relawan", color: "border-red-200 bg-white" },
             ].map((item, i) => (
-              <Reveal key={i} delay={i * 100}>
-                <div className={`rounded-3xl border-2 ${item.color} p-6`}>
-                  <item.Icon size={24} className="text-slate-400 mb-3" />
-                  <p className="text-base font-bold text-slate-800 mb-3 leading-snug italic">{item.q}</p>
+              <Reveal key={i} delay={i * 100} from={i === 0 ? "left" : i === 2 ? "right" : "bottom"}>
+                <div className={`rounded-3xl border-2 ${item.color} p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}>
+                  <item.Icon size={22} className="text-slate-300 mb-3" />
+                  <p className="text-base font-bold text-slate-800 mb-3 italic leading-snug">{item.q}</p>
                   <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">{item.who}</p>
                 </div>
               </Reveal>
             ))}
           </div>
-          <Reveal delay={300}>
+          <Reveal delay={350}>
             <p className="text-center text-slate-500 text-base mt-10 max-w-2xl mx-auto leading-relaxed">
-              Informasi ada di mana-mana — BMKG, BNPB, LAPAN, stasiun lokal — tapi terpencar-pencar
-              dan sulit dipahami warga biasa. <strong className="text-slate-800">PyroAlert menyatukan semuanya dalam satu tampilan yang bisa langsung diambil tindakan.</strong>
+              PyroAlert menyatukan data NASA, Copernicus, dan BMKG dalam satu tampilan yang bisa langsung diambil tindakan.
             </p>
           </Reveal>
         </div>
       </section>
 
-      {/* ══ ALUR SISTEM ═══════════════════════════════════════════ */}
+      {/* ══ ALUR 4 LANGKAH ══════════════════════════════════════ */}
       <section className="py-20 px-5 bg-white">
         <div className="max-w-4xl mx-auto">
-          <Reveal>
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3 text-center">Cara Kerja Sistem</p>
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3 text-center">
-              Dari satelit di angkasa<br />ke keputusan di tangan kamu
-            </h2>
-            <p className="text-slate-400 text-center mb-12 max-w-xl mx-auto">
-              4 langkah otomatis — dari deteksi api oleh NASA sampai rekomendasi status sekolah yang bisa disetujui Kepala Sekolah.
-            </p>
-          </Reveal>
-
-          <div className="flex flex-col gap-4">
-            <Reveal delay={0}>
-              <FlowStep n="1" color="border-blue-100"
-                icon={<Satellite size={16} className="text-blue-500" />}
-                title="Satelit NASA memindai seluruh Indonesia setiap 12 jam"
-                body="3 satelit VIIRS — SNPP, NOAA-20, dan NOAA-21 — mendeteksi panas permukaan bumi. Data dikirim ke server NASA dalam hitungan jam, lalu kita ambil dan proses. Ini bukan perkiraan: ini hotspot yang benar-benar terdeteksi dari luar angkasa." />
-            </Reveal>
-            <div className="flex justify-center"><div className="w-px h-8 bg-slate-200" /></div>
-
-            <Reveal delay={100}>
-              <FlowStep n="2" color="border-sky-100"
-                icon={<Wind size={16} className="text-sky-500" />}
-                title="Model atmosfer Copernicus CAMS hitung kualitas udara"
-                body="Sistem CAMS (Copernicus Atmosphere Monitoring Service) Eropa memproses partikel PM2.5 di udara berdasarkan model atmosfer 40 km. Diperbarui setiap jam. Hasilnya kita konversi ke ISPU (Indeks Standar Pencemar Udara) sesuai Permen LHK P.14/2020 punya pemerintah Indonesia." />
-            </Reveal>
-            <div className="flex justify-center"><div className="w-px h-8 bg-slate-200" /></div>
-
-            <Reveal delay={200}>
-              <FlowStep n="3" color="border-amber-100"
-                icon={<Flame size={16} className="text-amber-500" />}
-                title="Engine hitung status sekolah & simulasi arah asap"
-                body="Sistem secara otomatis menghitung apakah udara di kota kamu aman untuk sekolah. Ambang batas: Waspada (ISPU >100 selama 1 jam), Hybrid (>150 selama 3 jam), Daring Darurat (>200 selama 2 jam). Plus simulasi sederhana: dari titik api mana asap bisa sampai ke kotamu berdasarkan arah angin saat ini." />
-            </Reveal>
-            <div className="flex justify-center"><div className="w-px h-8 bg-slate-200" /></div>
-
-            <Reveal delay={300}>
-              <FlowStep n="4" color="border-emerald-100"
-                icon={<ShieldCheck size={16} className="text-emerald-500" />}
-                title="Kepala Sekolah setujui — baru jadi keputusan resmi"
-                body="Sistem hanya memberikan rekomendasi. Status resmi berlaku setelah Kepala Sekolah atau Dinas Pendidikan menekan tombol 'Setujui'. Setiap keputusan dicatat dalam log audit yang tidak bisa diubah (hash-chain). Pengumuman langsung bisa dikirim via WhatsApp." />
-            </Reveal>
+          <Reveal><p className="text-center text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Cara Kerja</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-12">Dari satelit di angkasa<br />ke keputusan di tanganmu</h2></Reveal>
+          <div className="flex flex-col gap-0">
+            {[
+              { n: "01", Icon: Satellite, color: "border-blue-200 bg-blue-50", badge: "bg-blue-600",
+                title: "Satelit NASA pindai Indonesia setiap 12 jam",
+                body: "3 satelit VIIRS (SNPP, NOAA-20, NOAA-21) deteksi panas permukaan bumi. Data masuk ke server dalam 3 jam. Bukan perkiraan — ini titik panas yang terdeteksi langsung dari orbit.",
+                logo: <Image src="/logo-nasa.png" alt="NASA" width={40} height={16} className="object-contain h-4 w-auto opacity-80" /> },
+              { n: "02", Icon: Wind, color: "border-sky-200 bg-sky-50", badge: "bg-sky-600",
+                title: "Copernicus CAMS hitung PM2.5 per jam",
+                body: "Model atmosfer 40 km dari Eropa estimasi partikel halus di udara. Dikonversi ke ISPU sesuai Permen LHK P.14/2020. Diperbarui setiap jam.",
+                logo: <span className="text-xs font-black text-sky-600 bg-sky-100 px-2 py-0.5 rounded">Copernicus</span> },
+              { n: "03", Icon: Flame, color: "border-amber-200 bg-amber-50", badge: "bg-amber-600",
+                title: "Engine otomatis hitung status sekolah & arah asap",
+                body: "Waspada (ISPU >100 selama 1 jam), Hybrid (>150, 3 jam), Daring Darurat (>200, 2 jam). Plus simulasi asap berdasarkan arah angin saat ini.",
+                logo: <Image src="/logo-bmkg.webp" alt="BMKG" width={36} height={16} className="object-contain h-4 w-auto opacity-80" /> },
+              { n: "04", Icon: ShieldCheck, color: "border-emerald-200 bg-emerald-50", badge: "bg-emerald-600",
+                title: "Kepala Sekolah setujui — baru resmi",
+                body: "Mesin hanya rekomendasi. Status resmi berlaku setelah manusia setujui. Log audit hash-chain tidak bisa diubah. Kirim via WhatsApp 1 klik.",
+                logo: null },
+            ].map((s, i) => (
+              <Reveal key={i} delay={i * 80} from={i % 2 === 0 ? "left" : "right"}>
+                <div className={`relative flex gap-4 p-5 rounded-3xl border-2 ${s.color} hover:shadow-md transition-all duration-300 ${i < 3 ? "mb-3" : ""}`}>
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl ${s.badge} text-white flex items-center justify-center text-sm font-black shadow-sm`}>{s.n}</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <s.Icon size={14} className="text-slate-500" />
+                      <p className="font-bold text-slate-800 text-sm">{s.title}</p>
+                      {s.logo && <span className="ml-auto">{s.logo}</span>}
+                    </div>
+                    <p className="text-sm text-slate-500 leading-relaxed">{s.body}</p>
+                  </div>
+                </div>
+                {i < 3 && (
+                  <div className="flex justify-center my-1"><div className="w-px h-6 bg-slate-200" /></div>
+                )}
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ══ FITUR TABS ════════════════════════════════════════════ */}
+      {/* ══ 4 FITUR ═════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-slate-950">
         <div className="max-w-5xl mx-auto">
-          <Reveal>
-            <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-3 text-center">4 Tab Utama</p>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-12 text-center">
-              Satu app, semua yang kamu butuhkan
-            </h2>
-          </Reveal>
+          <Reveal><p className="text-center text-xs font-bold text-orange-400 uppercase tracking-widest mb-3">4 Tab Utama</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-white mb-12">Satu app, semua yang kamu butuhkan</h2></Reveal>
           <div className="grid md:grid-cols-2 gap-5">
             {[
-              { Icon: Wind, color: "from-blue-600 to-sky-500", shadow: "shadow-blue-500/20", label: "Tab Udara", desc: "Nilai ISPU per jam + grafik 48 jam ke depan. Langsung tahu kondisi udara di kotamu dan apa yang harus dilakukan sekarang.", badge: "CAMS Copernicus" },
-              { Icon: School, color: "from-emerald-500 to-teal-500", shadow: "shadow-emerald-500/20", label: "Tab Sekolah", desc: "128 sekolah di 8 kota. Status rekomendasi otomatis, persetujuan kepala sekolah, log audit, QR poster, pengumuman WhatsApp.", badge: "128 sekolah" },
-              { Icon: Flame, color: "from-orange-500 to-red-500", shadow: "shadow-orange-500/20", label: "Tab Titik Api", desc: "Peta interaktif titik api satelit NASA. Klaster, ranking ancaman per kota, simulasi sebaran asap berdasarkan arah angin.", badge: "NASA FIRMS" },
-              { Icon: MapPin, color: "from-violet-500 to-purple-500", shadow: "shadow-violet-500/20", label: "Tab Posko", desc: "40 fasilitas kesehatan (RS, Puskesmas, Apotek, Posko BPBD) terdekat. Stok APD real-time. Laporan warga dengan verifikasi foto EXIF.", badge: "OpenStreetMap" },
+              { Icon: Wind,   grad: "from-blue-600 to-sky-500",     sh: "shadow-blue-500/20",   label: "Tab Udara",     desc: "ISPU per jam + grafik 48 jam. Tahu kondisi udara kotamu dan apa yang harus dilakukan sekarang.",    badge: "CAMS" },
+              { Icon: School, grad: "from-emerald-500 to-teal-500", sh: "shadow-emerald-500/20",label: "Tab Sekolah",   desc: "128 sekolah, 8 kota. Status otomatis, persetujuan Kepala Sekolah, log audit, QR poster, WhatsApp.", badge: "128 sekolah" },
+              { Icon: Flame,  grad: "from-orange-500 to-red-500",   sh: "shadow-orange-500/20", label: "Tab Titik Api", desc: "Peta titik api NASA real-time. Klaster, ranking ancaman, simulasi asap berdasarkan arah angin.",      badge: "NASA FIRMS" },
+              { Icon: MapPin, grad: "from-violet-500 to-purple-500",sh: "shadow-violet-500/20", label: "Tab Posko",     desc: "40 fasilitas kesehatan terdekat. Stok APD real-time. Laporan warga + verifikasi foto EXIF.",        badge: "OSM" },
             ].map((f, i) => (
-              <Reveal key={i} delay={i * 80}>
-                <div className={`rounded-3xl bg-slate-900 border border-slate-800 hover:border-slate-700 p-6 hover:-translate-y-1 transition-all duration-300 hover:shadow-2xl ${f.shadow}`}>
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 shadow-lg`}>
+              <Reveal key={i} delay={i * 80} from={i % 2 === 0 ? "left" : "right"}>
+                <div className={`rounded-3xl bg-slate-900 border border-slate-800 hover:border-slate-600 p-6 hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl ${f.sh}`}>
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.grad} flex items-center justify-center mb-4 shadow-lg`}>
                     <f.Icon size={22} className="text-white" />
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <p className="text-base font-black text-white">{f.label}</p>
-                    <span className="text-[10px] font-bold text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full uppercase tracking-wide">{f.badge}</span>
+                    <span className="text-[10px] font-bold text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full uppercase">{f.badge}</span>
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
                 </div>
@@ -337,52 +303,39 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══ BACKTEST RESULT ═══════════════════════════════════════ */}
+      {/* ══ BACKTEST ════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-white">
         <div className="max-w-4xl mx-auto">
-          <Reveal>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 text-center">Hasil Evaluasi Nyata</p>
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3 text-center">
-              Kami uji engine-nya dengan data historis 2023
-            </h2>
-            <p className="text-slate-400 text-center mb-10 max-w-xl mx-auto">
-              Backtest dilakukan dengan data PM2.5 historis September–Oktober 2023 (1.464 jam per kota). Hasilnya konsisten dengan laporan lapangan saat itu.
-            </p>
-          </Reveal>
+          <Reveal from="left"><p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Hasil Evaluasi Nyata</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-3">Engine diuji dengan data historis 2023</h2></Reveal>
+          <Reveal delay={120}><p className="text-center text-slate-400 mb-10 max-w-xl mx-auto">1.464 jam data PM2.5 historis September–Oktober 2023 per kota. Konsisten dengan laporan lapangan.</p></Reveal>
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { city: "Palangka Raya", prov: "Kalimantan Tengah", daring: 253, waspada: 355, normal: 770, note: "Kebakaran gambut masif Kalteng 2023" },
-              { city: "Jambi", prov: "Provinsi Jambi", daring: 0, waspada: 12, normal: 1452, note: "Musim kemarau lebih ringan" },
-              { city: "Pekanbaru", prov: "Riau", daring: 0, waspada: 61, normal: 1403, note: "Asap kiriman dari Kalteng" },
+              { city: "Jambi",         prov: "Provinsi Jambi",    daring: 0,   waspada: 12,  normal: 1452, note: "Musim kemarau lebih ringan" },
+              { city: "Pekanbaru",     prov: "Riau",              daring: 0,   waspada: 61,  normal: 1403, note: "Asap kiriman dari Kalteng" },
             ].map((c, i) => (
               <Reveal key={i} delay={i * 100}>
-                <div className="rounded-3xl border border-slate-200 p-5">
+                <div className="rounded-3xl border border-slate-200 p-5 hover:shadow-md transition-all">
                   <p className="text-base font-black text-slate-800">{c.city}</p>
                   <p className="text-xs text-slate-400 mb-4">{c.prov}</p>
-                  <div className="flex flex-col gap-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-red-500 font-semibold">Daring Darurat</span>
-                      <span className="font-bold tabular-nums">{c.daring} jam</span>
+                  {[
+                    { label: "Daring Darurat", val: c.daring,  total: 1464, color: "bg-red-500",   text: "text-red-500"   },
+                    { label: "Waspada/Hybrid", val: c.waspada, total: 1464, color: "bg-amber-400", text: "text-amber-500" },
+                    { label: "Normal",         val: c.normal,  total: 1464, color: "bg-emerald-400",text: "text-emerald-600"},
+                  ].map(r => (
+                    <div key={r.label} className="mb-2">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className={`font-semibold ${r.text}`}>{r.label}</span>
+                        <span className="font-bold tabular-nums text-slate-600">{r.val} jam</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div className={`h-full ${r.color} rounded-full transition-all duration-1000`}
+                          style={{ width: `${(r.val / r.total) * 100}%` }} />
+                      </div>
                     </div>
-                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full bg-red-500 rounded-full" style={{ width: `${(c.daring/1464)*100}%` }} />
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-amber-500 font-semibold">Waspada/Hybrid</span>
-                      <span className="font-bold tabular-nums">{c.waspada} jam</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full bg-amber-400 rounded-full" style={{ width: `${(c.waspada/1464)*100}%` }} />
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-emerald-500 font-semibold">Normal</span>
-                      <span className="font-bold tabular-nums">{c.normal} jam</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${(c.normal/1464)*100}%` }} />
-                    </div>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-4 italic">{c.note}</p>
+                  ))}
+                  <p className="text-xs text-slate-400 mt-3 italic">{c.note}</p>
                 </div>
               </Reveal>
             ))}
@@ -390,26 +343,25 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══ JUJUR SOAL BATASAN ════════════════════════════════════ */}
+      {/* ══ JUJUR KETERBATASAN ══════════════════════════════════ */}
       <section className="py-20 px-5 bg-amber-50 border-y border-amber-100">
         <div className="max-w-4xl mx-auto">
-          <Reveal>
-            <p className="text-xs font-bold text-amber-600 uppercase tracking-widest mb-3 text-center">Jujur Tentang Batasan</p>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-8 text-center">
-              Ini yang perlu kamu tahu sebelum pakai PyroAlert
-            </h2>
-          </Reveal>
+          <Reveal><p className="text-center text-xs font-bold text-amber-600 uppercase tracking-widest mb-3">Jujur Tentang Batasan</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-2xl md:text-3xl font-black text-slate-900 mb-8">Yang perlu kamu tahu sebelum pakai</h2></Reveal>
           <div className="grid md:grid-cols-2 gap-4">
             {[
-              { title: "CAMS ≠ alat ukur langsung", body: "Model atmosfer 40 km per piksel. Nilainya estimasi, bukan pengukuran stasiun ISPU resmi. Selisih bisa 20–40% dengan kondisi aktual." },
-              { title: "Titik panas ≠ kebakaran terkonfirmasi", body: "Satelit mendeteksi panas permukaan. Bisa berupa jalan beraspal panas, pabrik, atau lahan gambut yang membara di bawah tanah." },
-              { title: "Simulasi asap sangat sederhana", body: "Model drift kami hanya menggunakan arah angin satu titik, bukan model dispersi atmosfer seperti yang dipakai BMKG/BNPB." },
-              { title: "Bukan pengganti informasi resmi", body: "Selalu cek BMKG, BNPB, dan Dinas Kesehatan setempat untuk keputusan darurat. PyroAlert adalah alat bantu, bukan autoritas resmi." },
+              { title: "CAMS ≠ alat ukur langsung", body: "Model atmosfer 40 km per piksel. Nilainya estimasi, bukan stasiun ISPU resmi. Selisih bisa 20–40% dari kondisi aktual." },
+              { title: "Titik panas ≠ kebakaran terkonfirmasi", body: "Satelit deteksi panas permukaan. Bisa berupa aspal panas, pabrik, atau gambut membara di bawah tanah." },
+              { title: "Simulasi asap sangat sederhana", body: "Hanya pakai arah angin satu titik, bukan model dispersi seperti BMKG/BNPB. Anggap sebagai indikasi arah." },
+              { title: "Bukan pengganti informasi resmi", body: "Selalu cek BMKG dan BNPB untuk keputusan darurat. PyroAlert adalah alat bantu, bukan autoritas resmi." },
             ].map((item, i) => (
-              <Reveal key={i} delay={i * 60}>
-                <div className="bg-white rounded-2xl border border-amber-200 p-5">
-                  <p className="font-bold text-slate-800 mb-1">{item.title}</p>
-                  <p className="text-sm text-slate-500 leading-relaxed">{item.body}</p>
+              <Reveal key={i} delay={i * 70}>
+                <div className="bg-white rounded-2xl border border-amber-200 p-5 hover:shadow-sm transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 size={15} className="text-amber-400 flex-shrink-0" />
+                    <p className="font-bold text-slate-800">{item.title}</p>
+                  </div>
+                  <p className="text-sm text-slate-500 leading-relaxed pl-5">{item.body}</p>
                 </div>
               </Reveal>
             ))}
@@ -417,23 +369,23 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══ CTA ══════════════════════════════════════════════════ */}
+      {/* ══ CTA ═════════════════════════════════════════════════ */}
       <section className="py-24 px-5 bg-slate-950 text-center">
         <Reveal>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <NasaBadge /> <CamsBadge /> <BmkgBadge />
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <Image src="/logo-nasa.png" alt="NASA" width={52} height={21} className="object-contain h-[21px] w-auto opacity-50 brightness-200" />
+            <span className="text-slate-700">·</span>
+            <Image src="/logo-bmkg.webp" alt="BMKG" width={44} height={21} className="object-contain h-[21px] w-auto opacity-50 brightness-200" />
+            <span className="text-slate-700">·</span>
+            <span className="text-xs font-bold text-white/30 uppercase tracking-widest">Copernicus CAMS</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            Gratis. Real-time.<br />
-            <span className="text-orange-400">Mulai sekarang.</span>
+            Gratis. Real-time.<br /><span className="text-orange-400">Mulai sekarang.</span>
           </h2>
-          <p className="text-slate-400 mb-10 max-w-md mx-auto">
-            Tidak perlu daftar akun. Tidak perlu install apapun. Buka dan langsung pantau.
-          </p>
+          <p className="text-slate-400 mb-10 max-w-md mx-auto">Tidak perlu daftar akun. Tidak perlu install apapun. Buka dan langsung pantau.</p>
           <Link href="/udara"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white px-10 py-5 rounded-2xl text-lg font-black shadow-2xl shadow-orange-500/40 hover:scale-105 transition-all">
-            Pantau Kondisi Udara Sekarang
-            <ChevronRight size={22} />
+            Pantau Kondisi Udara Sekarang <ChevronRight size={22} />
           </Link>
           <p className="text-slate-600 text-xs mt-6 flex items-center justify-center gap-2">
             <Clock size={12} /> Data diperbarui setiap 10–15 menit
@@ -441,8 +393,12 @@ export function LandingPage() {
         </Reveal>
       </section>
 
-      {/* ══ FOOTER ═══════════════════════════════════════════════ */}
+      {/* ══ FOOTER ══════════════════════════════════════════════ */}
       <footer className="border-t border-slate-800 bg-slate-950 py-8 px-5 text-center text-xs text-slate-600">
+        <div className="flex items-center justify-center gap-4 mb-3">
+          <Image src="/logo-nasa.png" alt="NASA" width={40} height={16} className="object-contain h-4 w-auto opacity-30 brightness-200" />
+          <Image src="/logo-bmkg.webp" alt="BMKG" width={34} height={16} className="object-contain h-4 w-auto opacity-30 brightness-200" />
+        </div>
         <p className="mb-1">
           <strong className="text-slate-400">PyroAlert Karhutla &apos;26</strong> —
           Data: <a href="https://open-meteo.com" className="hover:text-slate-300 transition-colors">Open-Meteo CAMS (CC BY 4.0)</a>
