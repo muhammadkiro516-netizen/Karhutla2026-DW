@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+coverage/
+public/icons/
+docs/*.csv
+*.lock
+package-lock.json
+pnpm-lock.yaml
+.env*
+!.env.example

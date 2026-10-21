@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Test core logic on save",
+      "description": "Runs only the tests related to a changed lib/config file. Command action = zero model tokens unless it fails.",
+      "trigger": "PostFileSave",
+      "matcher": "src/(lib|config|types)/.*\\.ts$",
+      "action": { "type": "command", "command": "npx vitest related {{filePath}} --run --reporter=dot" },
+      "timeout": 120
+    }
+  ]
+}

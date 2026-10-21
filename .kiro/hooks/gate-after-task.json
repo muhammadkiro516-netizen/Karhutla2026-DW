@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Typecheck + tests after each spec task",
+      "description": "Quality gate so broken code never carries into the next task.",
+      "trigger": "PostTaskExec",
+      "action": { "type": "command", "command": "npx tsc --noEmit && npx vitest run --reporter=dot" },
+      "timeout": 240
+    }
+  ]
+}
