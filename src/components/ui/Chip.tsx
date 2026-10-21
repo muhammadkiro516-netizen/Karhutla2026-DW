@@ -11,10 +11,10 @@ export function Chip({ children, active, onClick, className = "" }: ChipProps) {
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-colors
+      className={`inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all
         ${active
-          ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
-          : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"}
+          ? "bg-blue-500 text-white shadow-md shadow-blue-500/25"
+          : "bg-white/70 dark:bg-slate-700/50 text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600/50 border border-white/40 dark:border-slate-600/40"}
         ${className}`}
     >
       {children}

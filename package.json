@@ -14,8 +14,10 @@
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",
     "@tailwindcss/postcss": "4.3.3",
+    "@types/leaflet": "^1.9.12",
     "exifr": "^7.1.3",
     "framer-motion": "^14.4.0",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.60.0",
     "next": "16.4.2",
     "papaparse": "^5.7.0",

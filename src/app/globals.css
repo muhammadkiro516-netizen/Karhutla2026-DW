@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @theme {
-  /* ISPU official colours (P.14/2020) */
+  /* ISPU official colours (P.14/2020) — slightly brighter for vivid UI */
   --color-ispu-baik: #16a34a;
   --color-ispu-sedang: #2563eb;
   --color-ispu-tidak-sehat: #eab308;
@@ -12,7 +13,7 @@
   --color-smoke: #6b7280;
 
   /* Spacing & shape */
-  --radius-card: 1rem;
+  --radius-card: 1.5rem;
 
   /* Typography */
   --font-plus-jakarta: "Plus Jakarta Sans", "Inter", sans-serif;
@@ -33,15 +34,19 @@ body {
   font-family: var(--font-plus-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f4f4f5; /* zinc-100 */
-  color: #18181b;             /* zinc-900 */
+  /* Bright, airy gradient like weather apps */
+  background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 30%, #f8fafc 100%);
+  background-attachment: fixed;
+  color: #0f172a; /* slate-900 */
+  min-height: 100vh;
 }
 
 /* ─── Dark mode ──────────────────────────────────────────── */
 [data-theme="dark"] {
   color-scheme: dark;
-  background-color: #09090b; /* zinc-950 */
-  color: #fafafa;            /* zinc-50 */
+  background: linear-gradient(180deg, #0c1424 0%, #0f172a 30%, #09090b 100%);
+  background-attachment: fixed;
+  color: #f1f5f9; /* slate-100 */
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────── */
@@ -51,6 +56,83 @@ body {
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+/* ─── Weather hero gradient ────────────────────────────── */
+.hero-grad {
+  position: relative;
+  overflow: hidden;
+}
+.hero-grad::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 70% 20%,
+    rgba(255, 255, 255, 0.25) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+/* ─── Glassmorphism cards ────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+[data-theme="dark"] .glass {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+}
+
+/* ─── Leaflet overrides for dark mode + theme ──────────── */
+.leaflet-container {
+  border-radius: var(--radius-card);
+  font-family: var(--font-plus-jakarta);
+  z-index: 0;
+}
+[data-theme="dark"] .leaflet-tile {
+  filter: brightness(0.7) invert(0.92) contrast(0.85) hue-rotate(190deg)
+    saturate(0.4);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+.leaflet-popup-content {
+  margin: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* ─── Custom map markers ───────────────────────────────── */
+.marker-fire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.marker-fire span {
+  transform: rotate(45deg);
+  font-size: 13px;
+  line-height: 1;
+}
+.marker-city {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid white;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
 }
 
 /* ─── Print ──────────────────────────────────────────────── */

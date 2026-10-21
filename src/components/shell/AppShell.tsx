@@ -19,11 +19,11 @@ export function AppShell({ children }: AppShellProps) {
   const { vulnerable, setVulnerable, lowData, setLowData } = useModes();
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50">
+    <div className="flex h-dvh overflow-hidden text-slate-900 dark:text-slate-100">
       <SideRail />
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Top bar */}
-        <header className="flex items-center gap-2 px-2 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        {/* Top bar — glassmorphic, bright */}
+        <header className="flex items-center gap-2 px-3 py-2.5 glass border-b border-white/30 dark:border-slate-700/40 z-20">
           <div className="flex-1 overflow-hidden">
             <CityChips />
           </div>
@@ -31,7 +31,7 @@ export function AppShell({ children }: AppShellProps) {
           <button
             onClick={() => setSettingsOpen(true)}
             aria-label="Pengaturan"
-            className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="p-2 rounded-xl hover:bg-white/40 dark:hover:bg-slate-700/40 transition-colors"
           >
             <Settings size={18} />
           </button>
@@ -67,7 +67,7 @@ export function AppShell({ children }: AppShellProps) {
               className="w-5 h-5 rounded"
             />
           </label>
-          <a href="/about" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 border-t border-zinc-100 dark:border-zinc-800 pt-3">
+          <a href="/about" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 border-t border-slate-100 dark:border-slate-700/40 pt-3">
             Tentang EduAir →
           </a>
         </div>
