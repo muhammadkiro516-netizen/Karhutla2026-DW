@@ -1,0 +1,45 @@
+export const id = {
+  nav: {
+    udara: "Udara",
+    sekolah: "Sekolah",
+    titikApi: "Titik Api",
+    posko: "Posko",
+  },
+  modes: {
+    vulnerable: "Mode Rentan",
+    lowData: "Mode Hemat Data",
+    demo: "Mode Demo",
+    simulation: "Mode Simulasi",
+  },
+  schoolStatus: {
+    NORMAL: "Normal",
+    WASPADA: "Waspada",
+    HYBRID: "Hybrid",
+    DARING_DARURAT: "Daring Darurat",
+  },
+  emergency: {
+    bnpb: "BNPB: 117",
+    bmkg: "BMKG: (021) 6546318",
+    damkar: "Damkar: 113",
+  },
+  disclaimer: {
+    cams: "CAMS ≈ model 40 km, bukan pengukuran stasiun.",
+    hotspot: "Titik panas ≠ kebakaran terkonfirmasi.",
+    drift: "Model sebaran sederhana, bukan prakiraan BMKG.",
+    exif: "EXIF dapat dimanipulasi, bukan bukti hukum.",
+    notBmkg: "Bukan pengganti BMKG/BNPB.",
+  },
+  ui: {
+    retry: "Coba lagi",
+    loading: "Memuat…",
+    stale: "Data tertunda (diperbarui",
+    useMyLocation: "Gunakan lokasi saya",
+    approve: "Setujui",
+    demoChip: "Data demo",
+    sampleHotspot: "Contoh, bukan live",
+    source: "Sumber",
+    logIntact: "Rantai log utuh ✓",
+    logBroken: "Log rusak pada entri",
+    settingsTitle: "Pengaturan",
+  },
+} as const;

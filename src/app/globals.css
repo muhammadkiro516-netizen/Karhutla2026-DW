@@ -1,26 +1,42 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ISPU official colours */
+  --color-ispu-baik: #4ade80;
+  --color-ispu-sedang: #facc15;
+  --color-ispu-tidak-sehat: #f97316;
+  --color-ispu-sangat-tidak-sehat: #dc2626;
+  --color-ispu-berbahaya: #7c3aed;
+
+  /* Neutral smoke tone */
+  --color-smoke: #6b7280;
+
+  /* Card radius */
+  --radius-card: 1rem;
+
+  /* Font */
+  --font-plus-jakarta: "Plus Jakarta Sans", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode via data-theme attribute (set by theme script before paint) */
+[data-theme=dark] {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-plus-jakarta);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media print {
+  nav,
+  header,
+  .print\:hidden {
+    display: none !important;
+  }
+  .announcement-card {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
 }
