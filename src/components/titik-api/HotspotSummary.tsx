@@ -11,33 +11,30 @@ interface HotspotSummaryProps {
 export function HotspotSummary({ payload, envelope }: HotspotSummaryProps) {
   const total = payload?.clusters.length ?? 0;
   const highConf = payload?.clusters.filter(c => c.confidence === "TINGGI").length ?? 0;
+  const medConf = payload?.clusters.filter(c => c.confidence === "SEDANG").length ?? 0;
   const fetchedAt = envelope?.fetchedAt;
   const timeStr = fetchedAt
-    ? new Date(fetchedAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
-    : "—";
+    ? new Date(fetchedAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : "—";
 
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-3">
-        <div className="flex items-baseline gap-2">
-          <span className="text-4xl">🔥</span>
-          <p className="text-3xl font-light text-slate-700 dark:text-slate-200">{total}</p>
-        </div>
+    <div className="rounded-2xl bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/30 dark:to-red-950/20 border border-orange-200 dark:border-orange-800/40 p-4">
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-4xl">🔥</span>
         <div>
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-300">klaster titik api</p>
-          <p className="text-xs text-slate-400">{highConf} konfiden tinggi</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-light text-slate-700 dark:text-slate-200">{total}</span>
+            <span className="text-sm text-slate-500">klaster</span>
+          </div>
+          <p className="text-xs text-slate-500">{highConf} tinggi • {medConf} sedang</p>
         </div>
-        {envelope?.demo && <DemoChip />}
+        {envelope?.demo && <div className="ml-auto"><DemoChip /></div>}
       </div>
       {envelope?.demo && (
-        <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-2 py-1">
-          Contoh, bukan live — tambahkan FIRMS_MAP_KEY di .env.local untuk data nyata.
+        <p className="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-xl px-3 py-2 mb-2">
+          Contoh, bukan live — aktifkan FIRMS_MAP_KEY untuk data satelit nyata.
         </p>
       )}
       <SourceTag source={envelope?.source ?? "FIRMS VIIRS NRT"} time={timeStr} tz="UTC" />
-      <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-        Klaster ~2,2 km menggabungkan deteksi duplikat dari 3 satelit VIIRS. Titik panas ≠ kebakaran terkonfirmasi.
-      </p>
     </div>
   );
 }

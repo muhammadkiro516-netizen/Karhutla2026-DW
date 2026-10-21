@@ -17,18 +17,12 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function UdaraPage() {
   const { city } = useCity();
-  const {
-    data: allAir,
-    envelope: airEnv,
-    isLoading: airLoading,
-    error: airError,
-    retry: airRetry,
-  } = useAir();
+  const { data: allAir, envelope: airEnv, isLoading: airLoading, error: airError, retry: airRetry } = useAir();
   const { data: allWeather } = useWeather();
   const { data: hotspots } = useHotspots();
 
-  const airCity = allAir?.find((a) => a.cityId === city.id);
-  const weatherCity = allWeather?.find((w) => w.cityId === city.id);
+  const airCity = allAir?.find(a => a.cityId === city.id);
+  const weatherCity = allWeather?.find(w => w.cityId === city.id);
   const { vulnerable } = useModes();
   const status = vulnerable ? airCity?.statusVulnerable : airCity?.status;
 
@@ -37,13 +31,7 @@ export default function UdaraPage() {
       <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:gap-6">
         {/* Left column */}
         <div className="flex flex-col gap-4">
-          <AirHero
-            city={airCity}
-            envelope={airEnv}
-            isLoading={airLoading}
-            error={airError}
-            retry={airRetry}
-          />
+          <AirHero city={airCity} envelope={airEnv} isLoading={airLoading} error={airError} retry={airRetry} />
           <MetricPills air={airCity} weather={weatherCity} />
           <SmokeHint hotspots={hotspots} air={airCity} cityId={city.id} />
           <Card>
@@ -53,19 +41,19 @@ export default function UdaraPage() {
           <ReadAloud city={airCity} cityName={city.name} />
         </div>
 
-        {/* Right column (desktop) / below on mobile */}
+        {/* Right column */}
         <div className="flex flex-col gap-4 mt-4 lg:mt-0">
           <Card>
-            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-3">
-              Grafik ISPU
-            </p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Grafik ISPU</p>
             {airCity ? (
               <IspuChartLazy hourly={airCity.hourly} tzLabel={airCity.tzLabel} />
             ) : airLoading ? (
               <Skeleton className="h-52 w-full" />
             ) : null}
           </Card>
-          <OtherCities allAir={allAir} />
+          <Card>
+            <OtherCities allAir={allAir} />
+          </Card>
         </div>
       </div>
     </div>

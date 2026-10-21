@@ -17,7 +17,8 @@ export const metadata: Metadata = {
 };
 
 // No-flash theme script: runs before paint, reads localStorage
-const themeScript = `(function(){try{var t=localStorage.getItem('eduair-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();`;
+// Always start in light mode — users can toggle dark via the button
+const themeScript = `(function(){try{var t=localStorage.getItem('eduair-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="antialiased">
+      <body className="antialiased bg-sky-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-dvh">
         <SwRegister />
         <SWRProvider>
           <AppShell>{children}</AppShell>
