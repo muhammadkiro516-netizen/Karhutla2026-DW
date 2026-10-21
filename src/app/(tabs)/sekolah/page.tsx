@@ -131,29 +131,21 @@ export default function SekolahPage() {
                 >
                   <button
                     onClick={() => setApproveSchool(school.slug)}
-                    className="text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-3 py-1.5 rounded-lg"
+                    className="text-sm bg-blue-500 text-white px-4 py-1.5 rounded-xl hover:bg-blue-600 transition-colors"
                   >
                     Setujui {school.level}
                   </button>
                   {official && (
                     <>
                       <button
-                        onClick={() =>
-                          setShowAnnouncement((prev) =>
-                            prev === school.slug ? null : school.slug,
-                          )
-                        }
-                        className="text-sm border border-zinc-300 dark:border-zinc-600 px-3 py-1.5 rounded-lg"
+                        onClick={() => setShowAnnouncement(prev => prev === school.slug ? null : school.slug)}
+                        className="text-sm border border-slate-200 dark:border-slate-600 px-4 py-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                       >
                         Pengumuman
                       </button>
                       <button
-                        onClick={() =>
-                          setShowQr((prev) =>
-                            prev === school.slug ? null : school.slug,
-                          )
-                        }
-                        className="text-sm border border-zinc-300 dark:border-zinc-600 px-3 py-1.5 rounded-lg"
+                        onClick={() => setShowQr(prev => prev === school.slug ? null : school.slug)}
+                        className="text-sm border border-slate-200 dark:border-slate-600 px-4 py-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                       >
                         QR Poster
                       </button>

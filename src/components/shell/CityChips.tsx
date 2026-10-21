@@ -24,7 +24,7 @@ export function CityChips() {
   return (
     <Suspense fallback={
       <div className="flex gap-2 overflow-x-auto px-2 py-1">
-        {CITIES.map(c => <span key={c.id} className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-sm">{c.name}</span>)}
+        {CITIES.map(c => <span key={c.id} className="px-3 py-1.5 rounded-full bg-white border border-slate-200 text-sm text-slate-500 flex-shrink-0">{c.name}</span>)}
       </div>
     }>
       <CityChipsInner />

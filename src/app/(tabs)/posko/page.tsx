@@ -118,7 +118,7 @@ export default function PoskoPage() {
             <FacilityFilters active={filter} onChange={setFilter} />
             <button
               onClick={() => setReportOpen(true)}
-              className="text-sm bg-orange-500 text-white rounded-lg px-3 py-1.5 hover:bg-orange-600 flex-shrink-0"
+              className="text-sm bg-orange-500 text-white rounded-xl px-4 py-2 hover:bg-orange-600 flex-shrink-0 font-medium shadow-sm shadow-orange-300/30"
             >
               + Laporan
             </button>
@@ -137,7 +137,7 @@ export default function PoskoPage() {
                 <StockChips stock={stockArr} facilityName={f.name} />
                 <button
                   onClick={() => setEditStock(f.id)}
-                  className="self-start text-xs text-zinc-400 underline"
+                  className="self-start text-xs text-blue-400 hover:text-blue-600 underline decoration-dotted"
                 >
                   Update stok
                 </button>

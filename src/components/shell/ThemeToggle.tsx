@@ -23,7 +23,7 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label="Toggle tema"
-      className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+      className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors"
     >
       {dark ? <Sun size={18} /> : <Moon size={18} />}
     </button>

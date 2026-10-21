@@ -23,12 +23,10 @@ export function IspuChartLazy({ hourly, tzLabel }: IspuChartLazyProps) {
   if (lowData) {
     const latest = [...hourly].reverse().find((h) => h.ispu != null);
     return (
-      <div className="rounded-lg bg-zinc-100 dark:bg-zinc-800 p-3 text-sm text-zinc-600 dark:text-zinc-300">
+      <div className="rounded-2xl bg-slate-100 dark:bg-slate-700/60 p-3 text-sm text-slate-600 dark:text-slate-300">
         <p className="font-medium">Mode Hemat Data aktif — grafik disembunyikan.</p>
         {latest && (
-          <p className="mt-1">
-            ISPU terakhir tercatat: {latest.ispu} ({latest.time.slice(11, 16)} {tzLabel})
-          </p>
+          <p className="mt-1">ISPU terakhir tercatat: {latest.ispu} ({latest.time.slice(11, 16)} {tzLabel})</p>
         )}
       </div>
     );

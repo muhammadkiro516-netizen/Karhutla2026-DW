@@ -54,7 +54,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div
         ref={ref}
-        className="relative z-10 w-full max-w-lg bg-white dark:bg-zinc-900 rounded-t-2xl lg:rounded-2xl p-6 shadow-xl"
+        className="relative z-10 w-full max-w-lg bg-white dark:bg-slate-800 rounded-t-3xl lg:rounded-3xl p-6 shadow-2xl border border-slate-100 dark:border-slate-700/50"
       >
         {title && <h2 className="text-lg font-semibold mb-4">{title}</h2>}
         {children}

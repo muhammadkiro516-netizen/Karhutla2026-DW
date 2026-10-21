@@ -27,7 +27,7 @@ export function SchoolList({ cityId, air, officialDecisions }: SchoolListProps) 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
-        <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
           Daftar Sekolah
         </p>
         <DemoChip />
@@ -41,31 +41,22 @@ export function SchoolList({ cityId, air, officialDecisions }: SchoolListProps) 
         return (
           <Card key={school.slug} className="flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{school.name}</p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                {school.level} {official ? "• Resmi" : "• Rekomendasi mesin"}
+              <p className="text-sm font-semibold truncate">{school.name}</p>
+              <p className="text-xs text-slate-400">
+                {school.level} {official ? "• Resmi ✓" : "• Rekomendasi mesin"}
               </p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <StatusBadge
-                status={displayStatus}
-                vulnerable={isVulnerable}
-                size="sm"
-              />
+              <StatusBadge status={displayStatus} vulnerable={isVulnerable} size="sm" />
               <button
                 onClick={() => setWhyOpen(school.slug)}
-                className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 underline"
+                className="text-xs text-blue-400 hover:text-blue-600 underline decoration-dotted"
               >
                 Kenapa?
               </button>
             </div>
             {whyOpen === school.slug && (
-              <WhySheet
-                open
-                onClose={() => setWhyOpen(null)}
-                status={displayStatus}
-                schoolName={school.name}
-              />
+              <WhySheet open onClose={() => setWhyOpen(null)} status={displayStatus} schoolName={school.name} />
             )}
           </Card>
         );

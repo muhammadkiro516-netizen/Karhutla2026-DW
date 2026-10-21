@@ -12,11 +12,11 @@ const TIPS = [
 export function SelfHelpCard() {
   return (
     <Card>
-      <p className="text-sm font-semibold mb-2">💡 Langkah Mandiri</p>
-      <ul className="flex flex-col gap-1">
+      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">💡 Langkah Mandiri</p>
+      <ul className="flex flex-col gap-2">
         {TIPS.map(tip => (
-          <li key={tip} className="text-xs text-zinc-600 dark:text-zinc-300 flex gap-2">
-            <span className="text-zinc-400">•</span>
+          <li key={tip} className="text-xs text-slate-600 dark:text-slate-300 flex gap-2 items-start">
+            <span className="text-blue-400 font-bold mt-px">•</span>
             <span>{tip}</span>
           </li>
         ))}

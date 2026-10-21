@@ -14,7 +14,7 @@ interface ClusterListProps {
 export function ClusterList({ clusters, highlightCityId }: ClusterListProps) {
   const [shown, setShown] = useState(PAGE_SIZE);
 
-  if (clusters.length === 0) {
+  if (!clusters.length) {
     return <EmptyState message="Tidak ada titik api yang cocok dengan filter." icon="🌿" />;
   }
 
@@ -24,10 +24,8 @@ export function ClusterList({ clusters, highlightCityId }: ClusterListProps) {
         <ClusterCard key={c.id} cluster={c} highlightCityId={highlightCityId} />
       ))}
       {shown < clusters.length && (
-        <button
-          onClick={() => setShown(s => s + PAGE_SIZE)}
-          className="text-sm text-zinc-500 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-600 rounded-lg py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-        >
+        <button onClick={() => setShown(s => s + PAGE_SIZE)}
+          className="text-sm text-slate-500 border border-slate-200 dark:border-slate-600 rounded-2xl py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium">
           Muat lebih banyak ({clusters.length - shown} tersisa)
         </button>
       )}
