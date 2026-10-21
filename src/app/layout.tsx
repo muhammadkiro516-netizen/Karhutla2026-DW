@@ -11,8 +11,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "EduAir — Status Udara & Sekolah",
-  description: "Pantau kualitas udara dan status sekolah akibat karhutla.",
+  title: "PyroAlert Karhutla '26 — Status Udara & Sekolah",
+  description: "Pantau kualitas udara dan status sekolah akibat karhutla dengan data NASA real-time.",
 };
 
 const themeScript = `(function(){try{var t=localStorage.getItem('eduair-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();`;

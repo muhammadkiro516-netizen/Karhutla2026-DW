@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { Card } from "@/components/ui/Card";
 
 export const metadata: Metadata = {
-  title: "Tentang EduAir",
-  description: "Cara kerja, keterbatasan, dan sumber data EduAir.",
+  title: "Tentang PyroAlert Karhutla '26",
+  description: "Cara kerja, keterbatasan, dan sumber data PyroAlert.",
 };
 
 export default function AboutPage() {
   return (
     <div className="p-4 max-w-2xl mx-auto flex flex-col gap-6 pb-20">
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tentang EduAir</h1>
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tentang PyroAlert Karhutla '26</h1>
 
       <Card>
         <h2 className="text-base font-semibold mb-2">Masalah yang Kami Coba Selesaikan</h2>

@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "EduAir — Status Udara & Sekolah",
-    short_name: "EduAir",
+    name: "PyroAlert Karhutla '26",
+    short_name: "PyroAlert",
     description: "Pantau kualitas udara dan status sekolah akibat karhutla.",
     start_url: "/udara",
     display: "standalone",

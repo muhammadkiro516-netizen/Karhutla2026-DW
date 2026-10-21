@@ -1,8 +1,8 @@
 import { LandingPage } from "@/components/landing/LandingPage";
 
 export const metadata = {
-  title: "EduAir — Sistem Peringatan Karhutla untuk Sekolah & Warga",
-  description: "Gabungkan data satelit titik api NASA FIRMS, kualitas udara ISPU CAMS, dan cuaca untuk keputusan status sekolah. Gratis, real-time, untuk 8 kota di Kalimantan & Sumatera.",
+  title: "PyroAlert Karhutla '26 — Sistem Peringatan Kebakaran Hutan Real-Time",
+  description: "Data satelit NASA FIRMS + kualitas udara ISPU + cuaca untuk keputusan status sekolah. Gratis, real-time, 8 kota Kalimantan & Sumatera.",
 };
 
 export default function RootPage() {
