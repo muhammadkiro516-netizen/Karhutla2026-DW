@@ -26,6 +26,7 @@ export function QrPoster({ schoolSlug, schoolName, status }: QrPosterProps) {
   return (
     <div className="flex flex-col items-center gap-3 p-4 border rounded-[--radius-card] bg-white dark:bg-zinc-900 print:border-zinc-300">
       {qrUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={qrUrl}
           alt={`QR kode status ${schoolName}`}

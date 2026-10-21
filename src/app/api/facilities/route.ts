@@ -29,52 +29,61 @@ export async function GET(req: Request) {
   if (!city) return NextResponse.json({ error: "Kota tidak dikenal." }, { status: 400 });
 
   const fetchedAt = new Date().toISOString();
+
+  // Helper: seed hospitals near this city
+  const seeds: Facility[] = SEED_HOSPITALS
+    .filter(h => haversineKm({ lat: h.lat, lon: h.lon }, city) <= 50)
+    .map(h => ({
+      ...h,
+      distanceKm: Math.round(haversineKm({ lat: h.lat, lon: h.lon }, city) * 10) / 10,
+    }));
+
+  let live: Omit<Facility, "distanceKm" | "seeded">[] = [];
+  let stale = false;
+  let isDemo = false;
+
   try {
-    const { value: live, stale } = await cached(
+    const result = await cached(
       `facilities-${cityId}`,
       CACHE_SECONDS.facilities,
       () => fetchFacilities(city.lat, city.lon)
     );
-
-    // Seed hospitals within 30 km of the city
-    const seeds = SEED_HOSPITALS
-      .filter(h => haversineKm({ lat: h.lat, lon: h.lon }, city) <= 30)
-      .map(h => ({
-        ...h,
-        distanceKm: Math.round(haversineKm({ lat: h.lat, lon: h.lon }, city) * 10) / 10,
-      }));
-
-    // Merge live + seed, dedupe by name or proximity
-    const merged: Facility[] = live.map(f => ({
-      ...f,
-      distanceKm: Math.round(haversineKm({ lat: f.lat, lon: f.lon }, city) * 10) / 10,
-      seeded: false,
-    }));
-
-    for (const seed of seeds) {
-      const dupe = merged.find(
-        f =>
-          f.name.toLowerCase() === seed.name.toLowerCase() ||
-          haversineKm({ lat: f.lat, lon: f.lon }, { lat: seed.lat, lon: seed.lon }) < 0.2
-      );
-      if (!dupe) merged.push(seed);
-    }
-
-    merged.sort((a, b) => a.distanceKm - b.distanceKm);
-
-    const envelope: ApiEnvelope<Facility[]> = {
-      data: merged,
-      source: "OpenStreetMap Overpass",
-      fetchedAt,
-      stale,
-    };
-
-    return NextResponse.json(envelope, {
-      headers: {
-        "Cache-Control": `public, s-maxage=${CACHE_SECONDS.facilities}, stale-while-revalidate=${CACHE_SECONDS.facilities * 6}`,
-      },
-    });
+    live = result.value;
+    stale = result.stale;
   } catch {
-    return NextResponse.json({ error: "Gagal memuat fasilitas." }, { status: 502 });
+    // Overpass unreachable — fall through with empty live, use seeds only
+    isDemo = true;
   }
+
+  // Merge live + seed, dedupe by name or proximity
+  const merged: Facility[] = live.map(f => ({
+    ...f,
+    distanceKm: Math.round(haversineKm({ lat: f.lat, lon: f.lon }, city) * 10) / 10,
+    seeded: false,
+  }));
+
+  for (const seed of seeds) {
+    const dupe = merged.find(
+      f =>
+        f.name.toLowerCase() === seed.name.toLowerCase() ||
+        haversineKm({ lat: f.lat, lon: f.lon }, { lat: seed.lat, lon: seed.lon }) < 0.2
+    );
+    if (!dupe) merged.push(seed);
+  }
+
+  merged.sort((a, b) => a.distanceKm - b.distanceKm);
+
+  const envelope: ApiEnvelope<Facility[]> = {
+    data: merged,
+    source: isDemo ? "Data seed (Overpass tidak tersedia)" : "OpenStreetMap Overpass",
+    fetchedAt,
+    stale,
+    demo: isDemo || undefined,
+  };
+
+  return NextResponse.json(envelope, {
+    headers: {
+      "Cache-Control": `public, s-maxage=${CACHE_SECONDS.facilities}, stale-while-revalidate=${CACHE_SECONDS.facilities * 6}`,
+    },
+  });
 }

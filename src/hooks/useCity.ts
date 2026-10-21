@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { CITIES, DEFAULT_CITY, getCity } from "@/config/cities";
 import type { CityId, City } from "@/config/cities";
 import { nearest } from "@/lib/geo";
@@ -23,25 +23,22 @@ export function useCity(): {
   const router = useRouter();
   const params = useSearchParams();
   // Initialise from localStorage immediately — avoids DEFAULT→stored flicker
-  const [cityId, setCityId] = useState<CityId>(getInitialCity);
-  const didInit = useRef(false);
+  const [storedCityId, setStoredCityId] = useState<CityId>(getInitialCity);
 
+  // Derive active city from URL param first, fall back to localStorage
+  const q = params.get("kota") as CityId | null;
+  const urlCity = q && getCity(q) ? q : null;
+  const cityId = urlCity ?? storedCityId;
+
+  // Persist URL-driven city to localStorage (no setState here)
   useEffect(() => {
-    // Only run once per params change, not on every render
-    const q = params.get("kota") as CityId | null;
-    if (q && getCity(q)) {
-      if (q !== cityId) setCityId(q);
-      didInit.current = true;
-      return;
+    if (urlCity) {
+      try { localStorage.setItem("eduair-city", urlCity); } catch { /* ignore */ }
     }
-    if (!didInit.current) {
-      // Already read from localStorage in useState initialiser
-      didInit.current = true;
-    }
-  }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [urlCity]);
 
   const setCity = (id: CityId) => {
-    setCityId(id);
+    setStoredCityId(id);
     try { localStorage.setItem("eduair-city", id); } catch { /* ignore */ }
     router.replace(`?kota=${id}`, { scroll: false });
   };
