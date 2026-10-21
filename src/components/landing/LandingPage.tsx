@@ -57,44 +57,6 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   return <span ref={ref}>{v.toLocaleString("id-ID")}{suffix}</span>;
 }
 
-/* ── partner logo strip ─────────────────────────────────── */
-function PartnerStrip({ dark = false }: { dark?: boolean }) {
-  const base = dark
-    ? "text-slate-500 border-slate-700"
-    : "text-slate-400 border-slate-200";
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-      <span className={`text-[10px] font-bold uppercase tracking-widest ${dark ? "text-slate-500" : "text-slate-400"}`}>
-        Didukung data dari
-      </span>
-
-      <a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" rel="noopener noreferrer"
-        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
-        <Image src="/logo-nasa.png" alt="NASA" width={52} height={20} className="object-contain h-5 w-auto" />
-        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>FIRMS VIIRS</span>
-      </a>
-
-      <a href="https://bmkg.go.id" target="_blank" rel="noopener noreferrer"
-        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
-        <Image src="/logo-bmkg.webp" alt="BMKG" width={44} height={20} className="object-contain h-5 w-auto" />
-        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>Referensi ISPU</span>
-      </a>
-
-      <a href="https://atmosphere.copernicus.eu" target="_blank" rel="noopener noreferrer"
-        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
-        <span className="text-xs font-black text-sky-500">Copernicus</span>
-        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>CAMS PM2.5</span>
-      </a>
-
-      <a href="https://openstreetmap.org" target="_blank" rel="noopener noreferrer"
-        className={`flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:opacity-100 opacity-70 transition-opacity ${base} bg-white/5`}>
-        <span className="text-xs font-black text-emerald-500">OSM</span>
-        <span className={`text-xs font-semibold ${dark ? "text-slate-400" : "text-slate-500"}`}>Fasilitas</span>
-      </a>
-    </div>
-  );
-}
-
 export function LandingPage() {
   const [heroOn, setHeroOn] = useState(false);
   useEffect(() => { setTimeout(() => setHeroOn(true), 60); }, []);
@@ -102,29 +64,23 @@ export function LandingPage() {
   return (
     <div className="bg-white text-slate-900 overflow-x-hidden">
 
-      {/* ══ STICKY NAV ══════════════════════════════════════════ */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/97 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-5 h-[60px]">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
-              <Flame size={15} className="text-white" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-black text-slate-900 text-[15px]">Pyro<span className="text-orange-500">Alert</span></span>
-              <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Karhutla &apos;26</span>
-            </div>
-            {/* Logo row — sejajar dalam satu baris */}
-            <div className="hidden md:flex items-center gap-3 ml-4 pl-4 border-l border-slate-200">
-              <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest whitespace-nowrap">API by</span>
-              <Image src="/logo-nasa.png" alt="NASA" width={44} height={18} className="object-contain h-[18px] w-auto opacity-70 hover:opacity-100 transition-opacity" />
-              <Image src="/logo-bmkg.webp" alt="BMKG" width={36} height={18} className="object-contain h-[18px] w-auto opacity-70 hover:opacity-100 transition-opacity" />
-            </div>
+      {/* ══ STICKY NAV (pill) ═══════════════════════════════════ */}
+      <div className="fixed top-4 left-0 right-0 z-50 flex justify-between items-center px-5 pointer-events-none">
+        {/* Pill brand + CTA */}
+        <div className="pointer-events-auto flex items-center gap-3 bg-white/90 backdrop-blur-xl rounded-full px-4 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-white/60">
+          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+            <Flame size={13} className="text-white" />
           </div>
-          <Link href="/udara" className="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105 shadow-lg">
-            Buka App <ChevronRight size={15} />
-          </Link>
+          <div className="flex flex-col leading-none">
+            <span className="font-black text-slate-900 text-sm">Pyro<span className="text-orange-500">Alert</span></span>
+            <span className="text-[8px] font-bold text-slate-400 tracking-widest uppercase">Karhutla &apos;26</span>
+          </div>
         </div>
-      </header>
+
+        <Link href="/udara" className="pointer-events-auto flex items-center gap-2 bg-slate-900 hover:bg-slate-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105 shadow-lg">
+          Buka App <ChevronRight size={14} />
+        </Link>
+      </div>
 
       {/* ══ HERO ════════════════════════════════════════════════ */}
       <section className="relative h-screen min-h-[640px] flex flex-col items-center justify-center overflow-hidden pt-[60px]">
@@ -147,13 +103,20 @@ export function LandingPage() {
           <p className="text-sm text-white/50 mb-10 max-w-xl mx-auto">
             Untuk orang tua, kepala sekolah, petugas posko, dan warga terdampak asap di Kalimantan &amp; Sumatera.
           </p>
-          {/* Partner logos di hero */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <Image src="/logo-nasa.png" alt="NASA" width={56} height={22} className="object-contain h-6 w-auto opacity-60 brightness-200" />
-            <span className="text-white/20">·</span>
-            <Image src="/logo-bmkg.webp" alt="BMKG" width={48} height={22} className="object-contain h-6 w-auto opacity-60 brightness-200" />
-            <span className="text-white/20">·</span>
-            <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Copernicus CAMS</span>
+          {/* Powered by row in hero — clean, tidak maksa */}
+          <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
+            <span className="text-white/30 text-xs uppercase tracking-widest font-bold">Data by</span>
+            <div className="flex items-center gap-3">
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl px-3 py-1.5 border border-white/20">
+                <Image src="/logo-nasa.png" alt="NASA" width={52} height={20} className="object-contain h-5 w-auto brightness-200 opacity-90" />
+              </div>
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl px-3 py-1.5 border border-white/20">
+                <Image src="/logo-bmkg.webp" alt="BMKG" width={44} height={20} className="object-contain h-5 w-auto brightness-200 opacity-90" />
+              </div>
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl px-3 py-1.5 border border-white/20">
+                <span className="text-white/80 text-xs font-bold">Copernicus</span>
+              </div>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/udara"
@@ -171,10 +134,47 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══ DATA PARTNER STRIP (putih, sejajar) ════════════════ */}
-      <section className="py-8 px-5 bg-slate-50 border-y border-slate-100">
+      {/* ══ POWERED BY STRIP ════════════════════════════════════ */}
+      <section className="py-10 px-5 bg-slate-50 border-y border-slate-100">
         <Reveal>
-          <PartnerStrip dark={false} />
+          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Didukung data dari</p>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            {/* NASA */}
+            <a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group hover:scale-105 transition-transform">
+              <div className="bg-white rounded-2xl px-5 py-3 shadow-sm border border-slate-100 group-hover:shadow-md transition-shadow">
+                <Image src="/logo-nasa.png" alt="NASA" width={80} height={32} className="object-contain h-8 w-auto" />
+              </div>
+              <span className="text-xs text-slate-400 font-medium">FIRMS VIIRS · 3 satelit</span>
+            </a>
+            {/* BMKG */}
+            <a href="https://bmkg.go.id" target="_blank" rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group hover:scale-105 transition-transform">
+              <div className="bg-white rounded-2xl px-5 py-3 shadow-sm border border-slate-100 group-hover:shadow-md transition-shadow">
+                <Image src="/logo-bmkg.webp" alt="BMKG" width={72} height={32} className="object-contain h-8 w-auto" />
+              </div>
+              <span className="text-xs text-slate-400 font-medium">Referensi ISPU resmi</span>
+            </a>
+            {/* Copernicus */}
+            <a href="https://atmosphere.copernicus.eu" target="_blank" rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group hover:scale-105 transition-transform">
+              <div className="bg-white rounded-2xl px-5 py-3 shadow-sm border border-slate-100 group-hover:shadow-md transition-shadow flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#003247] flex items-center justify-center">
+                  <span className="text-white text-[9px] font-black">EU</span>
+                </div>
+                <span className="font-black text-[#003247] text-base">Copernicus</span>
+              </div>
+              <span className="text-xs text-slate-400 font-medium">CAMS PM2.5 udara</span>
+            </a>
+            {/* Open-Meteo */}
+            <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group hover:scale-105 transition-transform">
+              <div className="bg-white rounded-2xl px-5 py-3 shadow-sm border border-slate-100 group-hover:shadow-md transition-shadow">
+                <span className="font-black text-slate-700 text-base">Open‑Meteo</span>
+              </div>
+              <span className="text-xs text-slate-400 font-medium">Cuaca &amp; angin</span>
+            </a>
+          </div>
         </Reveal>
       </section>
 

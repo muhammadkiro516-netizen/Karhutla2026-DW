@@ -7,8 +7,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 export default function TabsLayout({ children }: { children: ReactNode }) {
   return (
     <AppShell>
-      {/* pt-[108px]: 60px floating nav + 48px city chips */}
-      <div className="pt-[108px]">
+      {/* pt-[80px]: 16px top + ~52px pill nav + city chips ~48px = ~116px total */}
+      <div className="pt-[116px]">
         <Suspense fallback={
           <div className="px-4 pt-4 flex flex-col gap-4 min-h-screen">
             <Skeleton className="h-48 w-full" />

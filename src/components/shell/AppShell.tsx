@@ -15,8 +15,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Floating top nav */}
       <FloatingNav onOpenSettings={() => setSettingsOpen(true)} />
 
-      {/* City chips strip — fixed below nav */}
-      <div className="sticky top-[60px] z-30 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
+      {/* City chips strip — sticky below pill nav (top-4 + ~52px pill = ~72px) */}
+      <div className="sticky top-[72px] z-30 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-3">
           <CityChips />
         </div>
