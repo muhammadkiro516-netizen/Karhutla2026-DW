@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Wind, School, Flame, Tent } from "lucide-react";
@@ -11,28 +12,27 @@ const tabs = [
   { href: "/posko", label: id.nav.posko, Icon: Tent },
 ];
 
-export function SideRail() {
+function SideRailInner() {
   const pathname = usePathname();
-
   return (
-    <nav className="hidden lg:flex flex-col gap-1 w-16 pt-4 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+    <nav className="hidden lg:flex flex-col gap-1 w-16 pt-4 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex-shrink-0">
       {tabs.map(({ href, label, Icon }) => {
         const active = pathname.startsWith(href);
         return (
-          <Link
-            key={href}
-            href={href}
-            className={`flex flex-col items-center py-3 gap-1 text-xs rounded-lg mx-1 transition-colors ${
-              active
-                ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
-                : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            }`}
-          >
+          <Link key={href} href={href} className={`flex flex-col items-center py-3 gap-1 text-xs rounded-lg mx-1 transition-colors min-h-[56px] justify-center ${active ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}>
             <Icon size={20} />
             <span>{label}</span>
           </Link>
         );
       })}
     </nav>
+  );
+}
+
+export function SideRail() {
+  return (
+    <Suspense fallback={<div className="hidden lg:block w-16 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex-shrink-0" />}>
+      <SideRailInner />
+    </Suspense>
   );
 }

@@ -1,34 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  /* ISPU official colours */
-  --color-ispu-baik: #4ade80;
-  --color-ispu-sedang: #facc15;
-  --color-ispu-tidak-sehat: #f97316;
+  /* ISPU official colours (P.14/2020) */
+  --color-ispu-baik: #16a34a;
+  --color-ispu-sedang: #2563eb;
+  --color-ispu-tidak-sehat: #eab308;
   --color-ispu-sangat-tidak-sehat: #dc2626;
-  --color-ispu-berbahaya: #7c3aed;
+  --color-ispu-berbahaya: #111827;
 
-  /* Neutral smoke tone */
+  /* Smoke / neutral */
   --color-smoke: #6b7280;
 
-  /* Card radius */
+  /* Spacing & shape */
   --radius-card: 1rem;
 
-  /* Font */
-  --font-plus-jakarta: "Plus Jakarta Sans", sans-serif;
+  /* Typography */
+  --font-plus-jakarta: "Plus Jakarta Sans", "Inter", sans-serif;
 }
 
-/* Dark mode via data-theme attribute (set by theme script before paint) */
-[data-theme=dark] {
-  color-scheme: dark;
+/* ─── Base ──────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-plus-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f4f5; /* zinc-100 */
+  color: #18181b;             /* zinc-900 */
 }
 
+/* ─── Dark mode ──────────────────────────────────────────── */
+[data-theme="dark"] {
+  color-scheme: dark;
+  background-color: #09090b; /* zinc-950 */
+  color: #fafafa;            /* zinc-50 */
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────── */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Print ──────────────────────────────────────────────── */
 @media print {
   nav,
   header,

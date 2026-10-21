@@ -29,10 +29,12 @@ export function AirHero({ city, envelope, isLoading, error, retry }: AirHeroProp
 
   const ispu = city.ispuNow;
   const bgColor = ispu?.color ?? "#6b7280";
+  // BERBAHAYA (#111827) needs outline on dark mode per UI rules
+  const isBerbahaya = ispu?.category === "BERBAHAYA";
 
   return (
     <div
-      className="rounded-[--radius-card] p-6 text-white relative overflow-hidden"
+      className={`rounded-[--radius-card] p-6 text-white relative overflow-hidden transition-colors duration-[600ms] ${isBerbahaya ? "ring-2 ring-white/30" : ""}`}
       style={{ backgroundColor: bgColor }}
     >
       {envelope?.stale && (

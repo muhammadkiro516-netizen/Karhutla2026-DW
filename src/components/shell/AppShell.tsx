@@ -37,8 +37,8 @@ export function AppShell({ children }: AppShellProps) {
           </button>
         </header>
         <ModeBanner />
-        {/* Main content — pb-16 on mobile so BottomNav doesn't cover */}
-        <main className="flex-1 overflow-y-auto pb-16 lg:pb-0">
+        {/* Main content — pb covers BottomNav (72px) + safe area on mobile */}
+        <main className="flex-1 overflow-y-auto pb-[calc(72px+env(safe-area-inset-bottom))] lg:pb-0">
           {children}
         </main>
       </div>
