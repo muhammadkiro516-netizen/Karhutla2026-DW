@@ -14,6 +14,10 @@ import { OtherCities } from "@/components/udara/OtherCities";
 import { ReadAloud } from "@/components/udara/ReadAloud";
 import { HealthRiskCard } from "@/components/udara/HealthRiskCard";
 import { AirTrendSummary } from "@/components/udara/AirTrendSummary";
+import { ExposureCalculator } from "@/components/udara/ExposureCalculator";
+import { WindCompass } from "@/components/udara/WindCompass";
+import { HourlyHeatmap } from "@/components/udara/HourlyHeatmap";
+import { IspuGauge } from "@/components/udara/IspuGauge";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -31,9 +35,11 @@ export default function UdaraPage() {
   return (
     <div className="px-4 pt-4 pb-8 max-w-5xl mx-auto">
       <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:gap-6">
-        {/* ── Left column ── */}
+
+        {/* ════════════════ LEFT COLUMN ════════════════ */}
         <div className="flex flex-col gap-4">
-          {/* Big ISPU hero */}
+
+          {/* 1. Big ISPU number hero */}
           <AirHero
             city={airCity}
             envelope={airEnv}
@@ -42,10 +48,13 @@ export default function UdaraPage() {
             retry={airRetry}
           />
 
-          {/* PM2.5, kelembaban, angin pills */}
+          {/* 2. PM2.5 / humidity / wind pills */}
           <MetricPills air={airCity} weather={weatherCity} />
 
-          {/* What to do right now */}
+          {/* 3. ISPU arc gauge with animated needle */}
+          <IspuGauge air={airCity} />
+
+          {/* 4. Personal action steps */}
           <ActionCard
             cityName={city.name}
             status={status}
@@ -53,27 +62,31 @@ export default function UdaraPage() {
             vulnerable={vulnerable}
           />
 
-          {/* Health risk per group (real calculation from WHO + KLHK data) */}
+          {/* 5. Per-group health risk + WHO / cigarette math */}
           <HealthRiskCard air={airCity} weather={weatherCity} />
 
-          {/* Smoke / drift hint from hotspot data */}
+          {/* 6. Interactive exposure calculator */}
+          <ExposureCalculator pm25={airCity?.pm25 ?? null} />
+
+          {/* 7. Smoke / drift hint */}
           <SmokeHint hotspots={hotspots} air={airCity} cityId={city.id} />
 
-          {/* Tomorrow forecast (shows after 18.00 local) */}
+          {/* 8. Tomorrow forecast (shows after 18.00 local) */}
           {airCity && (
             <TomorrowCard tomorrow={airCity.tomorrow} city={city} />
           )}
 
-          {/* Read aloud */}
+          {/* 9. Read aloud */}
           <ReadAloud city={airCity} cityName={city.name} />
         </div>
 
-        {/* ── Right column ── */}
+        {/* ════════════════ RIGHT COLUMN ════════════════ */}
         <div className="flex flex-col gap-4 mt-4 lg:mt-0">
-          {/* Hourly ISPU chart */}
+
+          {/* 10. 48-h line chart */}
           <Card>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-              Grafik Kualitas Udara (48 jam)
+              Grafik ISPU 48 jam
             </p>
             {airCity ? (
               <IspuChartLazy hourly={airCity.hourly} tzLabel={airCity.tzLabel} />
@@ -82,13 +95,22 @@ export default function UdaraPage() {
             ) : null}
           </Card>
 
-          {/* 24-h trend summary: best/worst hour, hours unhealthy, trend direction */}
+          {/* 11. Interactive hourly heatmap */}
+          {airCity && (
+            <HourlyHeatmap hourly={airCity.hourly} tzLabel={airCity.tzLabel} />
+          )}
+
+          {/* 12. Wind compass + speed ring */}
+          <WindCompass weather={weatherCity} />
+
+          {/* 13. 24-h trend: best/worst hour, hours unhealthy */}
           <AirTrendSummary air={airCity} />
 
-          {/* All 66 cities grouped by island */}
+          {/* 14. All 66 cities grouped by island */}
           <Card>
             <OtherCities allAir={allAir} />
           </Card>
+
         </div>
       </div>
     </div>
