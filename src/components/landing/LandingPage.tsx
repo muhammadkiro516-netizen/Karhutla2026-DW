@@ -87,34 +87,6 @@ export function LandingPage() {
         <FireScene />
         <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-black/80 z-10" />
 
-        {/* Prabowo — left figure, bottom-left, partial crop */}
-        <div className="absolute bottom-0 left-0 z-15 w-[180px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] overflow-hidden pointer-events-none select-none">
-          <div className="relative w-[360px] sm:w-[440px] md:w-[520px] lg:w-[600px] h-full -ml-0">
-            <Image
-              src="/penyebab-karhutla-1.png"
-              alt="Prabowo menolak karhutla"
-              fill
-              className="object-cover object-left-bottom"
-              sizes="300px"
-              style={{ objectPosition: "0% 100%" }}
-            />
-          </div>
-        </div>
-
-        {/* Gibran — right figure, bottom-right, partial crop */}
-        <div className="absolute bottom-0 right-0 z-15 w-[180px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] overflow-hidden pointer-events-none select-none">
-          <div className="relative w-[360px] sm:w-[440px] md:w-[520px] lg:w-[600px] h-full -mr-0 ml-auto">
-            <Image
-              src="/penyebab-karhutla-1.png"
-              alt="Gibran menolak karhutla"
-              fill
-              className="object-cover object-right-bottom"
-              sizes="300px"
-              style={{ objectPosition: "100% 100%" }}
-            />
-          </div>
-        </div>
-
         <div className={`relative z-20 text-center px-5 max-w-3xl mx-auto transition-all duration-800 ${heroOn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}>
           <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-1.5 rounded-full text-xs font-bold mb-6 backdrop-blur-sm animate-pulse">
             <span className="w-2 h-2 rounded-full bg-red-400" />
