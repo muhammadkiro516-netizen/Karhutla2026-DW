@@ -18,6 +18,7 @@ import { ExposureCalculator } from "@/components/udara/ExposureCalculator";
 import { WindCompass } from "@/components/udara/WindCompass";
 import { HourlyHeatmap } from "@/components/udara/HourlyHeatmap";
 import { ShareCard } from "@/components/udara/ShareCard";
+import { MonthlyRecap } from "@/components/udara/MonthlyRecap";
 import { IspuGauge } from "@/components/udara/IspuGauge";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -110,7 +111,10 @@ export default function UdaraPage() {
           {/* 13. 24-h trend: best/worst hour, hours unhealthy */}
           <AirTrendSummary air={airCity} />
 
-          {/* 14. All 66 cities grouped by island */}
+          {/* 14. Monthly historical recap (real data from Open-Meteo) */}
+          <MonthlyRecap cityId={city.id} />
+
+          {/* 15. All 66 cities grouped by island */}
           <Card>
             <OtherCities allAir={allAir} />
           </Card>

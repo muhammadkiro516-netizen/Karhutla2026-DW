@@ -307,9 +307,9 @@ export function LandingPage() {
       {/* ══ BACKTEST ════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-white">
         <div className="max-w-4xl mx-auto">
-          <Reveal from="left"><p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Hasil Evaluasi Nyata</p></Reveal>
-          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-3">Engine diuji dengan data historis 2023</h2></Reveal>
-          <Reveal delay={120}><p className="text-center text-slate-400 mb-10 max-w-xl mx-auto">1.464 jam data PM2.5 historis September–Oktober 2023 per kota. Konsisten dengan laporan lapangan.</p></Reveal>
+          <Reveal from="left"><p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Validasi Historis — Bukan Data Live</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-3">Engine divalidasi dengan data historis 2023</h2></Reveal>
+          <Reveal delay={120}><p className="text-center text-slate-400 mb-10 max-w-xl mx-auto">1.464 jam data PM2.5 historis Sep–Okt 2023 per kota. <span className="font-semibold text-slate-600">Data live di app berasal langsung dari Open-Meteo CAMS realtime.</span></p></Reveal>
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { city: "Palangka Raya", prov: "Kalimantan Tengah", daring: 253, waspada: 355, normal: 770, note: "Kebakaran gambut masif Kalteng 2023" },
