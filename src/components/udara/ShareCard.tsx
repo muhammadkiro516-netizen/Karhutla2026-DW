@@ -273,70 +273,80 @@ function drawFrame(
     c.beginPath();c.arc(ex,ey,er,0,Math.PI*2);c.fill();c.restore();
   }
 
-  // ── Top pill ──
-  c.fillStyle="rgba(255,255,255,0.12)";
-  rr(c,56,60,CW-112,68,34);c.fill();
-  c.fillStyle="#fff";c.font="bold 28px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.textAlign="left";c.fillText("PyroAlert  Karhutla 26",88,103);
-  c.textAlign="right";c.fillStyle="rgba(255,255,255,0.5)";
+  // ── Top pill — full width brand bar ──
+  c.fillStyle="rgba(255,255,255,0.11)";
+  rr(c,56,58,CW-112,70,35);c.fill();
+  c.fillStyle="#fff";
+  c.font="bold 28px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  c.textAlign="left";
+  c.fillText("PyroAlert  Karhutla 26",92,103);
+  c.textAlign="right";
+  c.fillStyle="rgba(255,255,255,0.55)";
   c.font="26px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.fillText(timeStr,CW-76,103);
+  c.fillText(timeStr,CW-80,103);
 
-  // ── Province + City — fully centred ──
+  // ── Province + City — FULLY CENTERED ──
   c.textAlign="center";
-  c.fillStyle="rgba(255,255,255,0.45)";
+  c.fillStyle="rgba(255,255,255,0.48)";
   c.font="34px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
   c.fillText(city.province.toUpperCase(),CW/2,210);
-  c.fillStyle="#fff";
-  c.font=`bold ${city.name.length>12?68:84}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
-  c.fillText(city.name,CW/2,322);
+  c.fillStyle="#ffffff";
+  const cityFontSize=city.name.length>12?70:city.name.length>8?84:96;
+  c.font=`bold ${cityFontSize}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  c.fillText(city.name,CW/2,330);
 
-  // ── ISPU number — left-aligned but centred in left half ──
-  // Left half = 0..CW*0.62  right half = char
-  const leftCX = CW * 0.31;
-  const numGlow=c.createRadialGradient(leftCX,640,30,leftCX,640,280);
-  numGlow.addColorStop(0,"rgba(255,255,255,0.22)");numGlow.addColorStop(1,"transparent");
-  c.fillStyle=numGlow;c.fillRect(0,390,CW*0.65,380);
+  // ── ISPU number — FULLY CENTERED, large ──
+  const numGlow=c.createRadialGradient(CW/2,650,30,CW/2,650,340);
+  numGlow.addColorStop(0,"rgba(255,255,255,0.20)");
+  numGlow.addColorStop(1,"transparent");
+  c.fillStyle=numGlow;c.fillRect(0,380,CW,420);
+
   c.fillStyle="#ffffff";
   c.textAlign="center";
-  c.font=`900 ${ispu>=300?260:300}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
-  c.fillText(String(ispu),leftCX,700);
+  const ispuFontSize=ispu>=300?280:ispu>=100?310:340;
+  c.font=`900 ${ispuFontSize}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  c.fillText(String(ispu),CW/2,720);
 
-  // accent line under number
-  const lineY=726;
-  const lg=c.createLinearGradient(56,lineY,CW*0.62,lineY);
-  lg.addColorStop(0,th.accent);lg.addColorStop(1,"transparent");
-  c.strokeStyle=lg;c.lineWidth=5;c.beginPath();c.moveTo(56,lineY);c.lineTo(CW*0.62,lineY);c.stroke();
+  // Accent underline — centered
+  const lineHalfW=240;
+  const lineY=736;
+  const lg=c.createLinearGradient(CW/2-lineHalfW,lineY,CW/2+lineHalfW,lineY);
+  lg.addColorStop(0,"transparent");
+  lg.addColorStop(0.5,th.accent);
+  lg.addColorStop(1,"transparent");
+  c.strokeStyle=lg;c.lineWidth=5;
+  c.beginPath();c.moveTo(CW/2-lineHalfW,lineY);c.lineTo(CW/2+lineHalfW,lineY);c.stroke();
 
-  // category badge — centred in left half
-  const bdgW=320,bdgX=leftCX-bdgW/2;
-  rr(c,bdgX,740,bdgW,60,30);
-  c.fillStyle=`rgba(${ar},${ag},${ab},0.22)`;c.fill();
-  c.strokeStyle=th.accent;c.lineWidth=1.5;c.stroke();
+  // ── Category badge — CENTERED pill ──
+  const bdgW=340,bdgH=64;
+  const bdgX=CW/2-bdgW/2;
+  rr(c,bdgX,752,bdgW,bdgH,32);
+  c.fillStyle=`rgba(${ar},${ag},${ab},0.25)`;c.fill();
+  c.strokeStyle=th.accent;c.lineWidth=2;c.stroke();
   c.fillStyle=th.accent;
-  c.font="bold 34px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.textAlign="center";c.fillText(th.label,leftCX,781);
+  c.font="bold 36px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  c.textAlign="center";
+  c.fillText(th.label,CW/2,791);
 
-  // status word
-  c.fillStyle="rgba(255,255,255,0.60)";
-  c.font="30px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.fillText(th.statusWord+" UDARA",leftCX,832);
+  // Status word — centered
+  c.fillStyle="rgba(255,255,255,0.65)";
+  c.font="700 30px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  c.fillText(th.statusWord+" UDARA",CW/2,840);
 
-  // desc — centred across full width
+  // Desc — centered
   const descMap:{[k:string]:string}={
     BAIK:"Aman beraktivitas di luar ruangan",
     SEDANG:"Bisa keluar, tetap perhatikan gejala",
     TIDAK_SEHAT:"Kurangi aktivitas di luar rumah",
     SANGAT_TIDAK_SEHAT:"Hindari keluar rumah sebisa mungkin",
-    BERBAHAYA:"Tetap di dalam, tutup semua ventilasi",
+    BERBAHAYA:"Tetap di dalam — tutup semua ventilasi",
   };
-  c.fillStyle="rgba(255,255,255,0.42)";
+  c.fillStyle="rgba(255,255,255,0.45)";
   c.font="28px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.textAlign="center";c.fillText(descMap[cat]??"",CW/2,894);
+  c.fillText(descMap[cat]??"",CW/2,890);
 
-  // ── Character — drawn RIGHT side, overlapping card top ──
-  // baseY is where the feet sit — place just above ground line, partially on card
-  drawChar(c, CW*0.80, gY+20, cat, 1.15);
+  // ── Character — drawn LAST (after card) so always visible ──
+  // Positioned bottom-right, peeking above card top edge
 
   // ── White card ──
   const cdX=52,cdY=CH*.57,cdW=CW-104,cdH=CH-cdY-90;
@@ -403,6 +413,10 @@ function drawFrame(
   // disclaimer
   c.fillStyle="rgba(148,163,184,0.55)";c.font="19px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
   c.fillText("Data estimasi CAMS  Bukan alat ukur resmi BMKG",CW/2,CH-52);
+
+  // ── Character drawn LAST so it always appears on top of everything ──
+  // Positioned right side, feet at card top edge, peeking up from card
+  drawChar(c, CW*0.81, cdY+30, cat, 1.18);
 }
 
 // ── Animated preview ──────────────────────────────────────────────────────────
