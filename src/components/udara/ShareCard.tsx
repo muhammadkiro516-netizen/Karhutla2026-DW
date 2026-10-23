@@ -1,12 +1,19 @@
 "use client";
 /**
- * ShareCard — animated canvas preview + MP4 video share via MediaRecorder.
+ * ShareCard — animated canvas + MP4/WebM video export via MediaRecorder.
  *
- * Sharing MP4 via Web Share API works on iOS Safari 15.4+, Chrome Android 92+.
- * Fallback: PNG download for desktop / unsupported browsers.
+ * The recording canvas MUST be attached to DOM for captureStream() to work
+ * correctly in all browsers. We mount it hidden (opacity:0, position:absolute)
+ * during recording, then remove it after.
  *
- * Design: drama-first. Per-category palette. No emoji in card copy.
- * Palette: deep dark bg, single luminous accent stripe, frosted white card.
+ * Share flow:
+ *  1. Record 3s animation into MP4/WebM blob
+ *  2. Try navigator.share({ files }) — on mobile this opens the OS share sheet
+ *     where the user can pick Instagram, WhatsApp, etc.
+ *  3. Fallback: auto-download the video file
+ *
+ * Spotify / Instagram direct: only works from native apps via UIPasteboard (iOS)
+ * or Android Intent. From a browser the closest is navigator.share + file.
  */
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
@@ -399,6 +406,7 @@ type Ember={x:number;y:number;vx:number;vy:number;r:number;a:number;col:string};
 
 interface PreviewProps{
   city:City;air:AirCity;weather:WeatherCity|undefined;
+  /** Called with the live preview canvas so we can reuse it for recording */
   onCanvasReady:(cv:HTMLCanvasElement)=>void;
 }
 function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
@@ -406,35 +414,34 @@ function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
   const tRef=useRef(0);
   const rafRef=useRef(0);
   const embersRef=useRef<Ember[]>([]);
-  const fullRef=useRef<HTMLCanvasElement|null>(null);
+
+  const cat=air.ispuNow?.category??"SEDANG";
+  const th=THEME[cat]??FB;
 
   useEffect(()=>{
     const cv=ref.current;if(!cv)return;
-    const PW=270,PH=480;
-    cv.width=PW;cv.height=PH;
+    // Size preview canvas
+    cv.width=270;cv.height=480;
     const ctx=cv.getContext("2d");if(!ctx)return;
 
-    // full-res canvas for export
-    const full=document.createElement("canvas");
-    drawFrame(full,city,air,weather,0);
-    fullRef.current=full;
-    onCanvasReady(full);
-
-    const cat=air.ispuNow?.category??"SEDANG";
-    const th=THEME[cat]??FB;
+    // Notify parent immediately so it can use this canvas for recording
+    onCanvasReady(cv);
 
     const loop=()=>{
       tRef.current+=0.048;
       const t=tRef.current;
-      // redraw at preview scale
+
+      // Draw full frame at 1080×1920 then scale down into preview
       const off=document.createElement("canvas");
+      off.width=CW;off.height=CH;
       drawFrame(off,city,air,weather,t);
-      ctx.drawImage(off,0,0,PW,PH);
-      // embers on top
+      ctx.drawImage(off,0,0,270,480);
+
+      // Ember particles on preview
       if(Math.random()<.45) embersRef.current.push({
-        x:Math.random()*PW,y:PH*.88,
+        x:Math.random()*270,y:480*.88,
         vx:(Math.random()-.5)*1.5,vy:-(2+Math.random()*3),
-        r:1.2+Math.random()*2.4,a:.9+Math.random()*.1,
+        r:1.2+Math.random()*2.4,a:.9,
         col:[th.accent,"#fbbf24","#fb923c"][Math.floor(Math.random()*3)],
       });
       embersRef.current=embersRef.current.filter(e=>e.a>.04);
@@ -450,16 +457,14 @@ function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
-  const cat=air.ispuNow?.category??"SEDANG";
-  const th=THEME[cat]??FB;
   return(
     <div className="flex justify-center">
       <div className="relative rounded-3xl overflow-hidden"
         style={{width:270,height:480,
           boxShadow:`0 0 40px ${th.accentGlow}, 0 8px 32px rgba(0,0,0,0.4)`,
           border:`1.5px solid ${th.accent}55`}}>
-        <canvas ref={ref} className="block w-full h-full"/>
-        {/* holographic shimmer */}
+        {/* This canvas is attached to DOM — captureStream works */}
+        <canvas ref={ref} width={270} height={480} className="block w-full h-full"/>
         <div className="absolute inset-0 pointer-events-none rounded-3xl"
           style={{background:"linear-gradient(130deg,rgba(255,255,255,0.07) 0%,transparent 60%)"}}/>
       </div>
@@ -467,32 +472,70 @@ function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
   );
 }
 
-// ── Record MP4 via MediaRecorder ──────────────────────────────────────────────
-async function recordVideo(city:City,air:AirCity,weather:WeatherCity|undefined):Promise<Blob>{
-  return new Promise((resolve,reject)=>{
-    const cv=document.createElement("canvas");
-    cv.width=CW;cv.height=CH;
-    const stream=cv.captureStream(24); // 24 fps
-    const recorder=new MediaRecorder(stream,{
-      mimeType:MediaRecorder.isTypeSupported("video/mp4")?"video/mp4":"video/webm;codecs=vp9",
-      videoBitsPerSecond:4_000_000,
-    });
-    const chunks:Blob[]=[];
-    recorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
-    recorder.onstop=()=>{
-      const blob=new Blob(chunks,{type:recorder.mimeType});
-      resolve(blob);
-    };
-    recorder.onerror=()=>reject(new Error("MediaRecorder error"));
+// ── Record from a DOM-attached canvas ────────────────────────────────────────
+// We create a separate full-res recording canvas, append it invisibly to body,
+// record, then remove. This ensures captureStream() works in all browsers.
+function recordFromCanvas(
+  city:City, air:AirCity, weather:WeatherCity|undefined,
+): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    // Create full-res canvas and attach to DOM (required for captureStream)
+    const cv = document.createElement("canvas");
+    cv.width = CW; cv.height = CH;
+    cv.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;";
+    document.body.appendChild(cv);
 
-    let t=0, frame=0;
-    const FRAMES=72; // 3 seconds at 24fps
-    recorder.start();
-    const tick=()=>{
-      t+=0.06;frame++;
-      drawFrame(cv,city,air,weather,t);
-      if(frame<FRAMES) requestAnimationFrame(tick);
-      else recorder.stop();
+    const supportedType = MediaRecorder.isTypeSupported("video/mp4;codecs=avc1")
+      ? "video/mp4;codecs=avc1"
+      : MediaRecorder.isTypeSupported("video/mp4")
+      ? "video/mp4"
+      : MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+      ? "video/webm;codecs=vp9"
+      : "video/webm";
+
+    let stream: MediaStream;
+    try {
+      stream = (cv as HTMLCanvasElement & { captureStream(fps:number):MediaStream }).captureStream(30);
+    } catch {
+      document.body.removeChild(cv);
+      reject(new Error("captureStream not supported"));
+      return;
+    }
+
+    const recorder = new MediaRecorder(stream, {
+      mimeType: supportedType,
+      videoBitsPerSecond: 6_000_000,
+    });
+
+    const chunks: Blob[] = [];
+    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = () => {
+      document.body.removeChild(cv);
+      const finalType = supportedType.startsWith("video/mp4") ? "video/mp4" : "video/webm";
+      resolve(new Blob(chunks, { type: finalType }));
+    };
+    recorder.onerror = () => {
+      document.body.removeChild(cv);
+      reject(new Error("MediaRecorder error"));
+    };
+
+    const DURATION_SEC = 4;
+    const FPS = 30;
+    const TOTAL_FRAMES = DURATION_SEC * FPS;
+    let frame = 0;
+    let t = 0;
+
+    recorder.start(100); // collect in 100ms chunks
+
+    const tick = () => {
+      t += 0.055;
+      frame++;
+      drawFrame(cv, city, air, weather, t);
+      if (frame < TOTAL_FRAMES) {
+        requestAnimationFrame(tick);
+      } else {
+        recorder.stop();
+      }
     };
     requestAnimationFrame(tick);
   });
@@ -501,72 +544,96 @@ async function recordVideo(city:City,air:AirCity,weather:WeatherCity|undefined):
 // ── Modal ─────────────────────────────────────────────────────────────────────
 interface ModalProps{city:City;air:AirCity;weather:WeatherCity|undefined;onClose:()=>void;}
 function ShareModal({city,air,weather,onClose}:ModalProps){
-  const fullRef=useRef<HTMLCanvasElement|null>(null);
-  const [status,setStatus]=useState<"idle"|"recording"|"working"|"done">("idle");
-  const [canRecord]=useState(()=>typeof window!=="undefined"&&"MediaRecorder"in window&&"captureStream"in HTMLCanvasElement.prototype);
+  const previewCanvasRef=useRef<HTMLCanvasElement|null>(null);
+  const [status,setStatus]=useState<"idle"|"recording"|"working"|"done"|"error">("idle");
+  const [recordSupport]=useState(()=>{
+    if(typeof window==="undefined")return false;
+    if(!("MediaRecorder" in window))return false;
+    const cv=document.createElement("canvas");
+    return typeof (cv as {captureStream?:unknown}).captureStream==="function";
+  });
 
-  const getBlob=useCallback(():Promise<Blob>=>new Promise((res,rej)=>{
-    const c=fullRef.current;if(!c){rej(new Error("no canvas"));return;}
-    c.toBlob(b=>b?res(b):rej(new Error("toBlob")),"image/png");
-  }),[]);
+  // PNG from current preview canvas frame
+  const getPng=useCallback(():Promise<Blob>=>new Promise((res,rej)=>{
+    const cv=previewCanvasRef.current;if(!cv){rej(new Error("no canvas"));return;}
+    // Draw a fresh full-res frame, scale down
+    const full=document.createElement("canvas");
+    full.width=CW;full.height=CH;
+    drawFrame(full,city,air,weather,0);
+    full.toBlob(b=>b?res(b):rej(new Error("toBlob")),"image/png");
+  }),[city,air,weather]);
 
   const dl=useCallback(async()=>{
     setStatus("working");
     try{
-      const blob=await getBlob();
+      const blob=await getPng();
       const url=URL.createObjectURL(blob);
       const a=document.createElement("a");
       a.href=url;a.download=`pyroalert-${city.id}.png`;a.click();
       URL.revokeObjectURL(url);
       setStatus("done");
-    }catch{setStatus("idle");}
+    }catch{setStatus("error");}
     setTimeout(()=>setStatus("idle"),2500);
-  },[city.id,getBlob]);
+  },[city.id,getPng]);
 
   const shareVideo=useCallback(async()=>{
     setStatus("recording");
     try{
-      const blob=await recordVideo(city,air,weather);
-      const ext=blob.type.includes("mp4")?"mp4":"webm";
+      const blob=await recordFromCanvas(city,air,weather);
+      const isMP4=blob.type.includes("mp4");
+      const ext=isMP4?"mp4":"webm";
       const file=new File([blob],`pyroalert-${city.id}.${ext}`,{type:blob.type});
-      if(navigator.canShare?.({files:[file]})){
+      // Try Web Share API with file (works on iOS Safari, Chrome Android)
+      if(typeof navigator.canShare==="function"&&navigator.canShare({files:[file]})){
         await navigator.share({
           title:`Udara ${city.name} — PyroAlert`,
-          text:`ISPU ${air.ispuNow?.value??""} di ${city.name}`,
+          text:`ISPU ${air.ispuNow?.value??""} (${air.ispuNow?.label??""}) di ${city.name}. Pantau: eduair.vercel.app`,
           files:[file],
         });
         setStatus("done");
       } else {
-        // fallback: download video
+        // Desktop / unsupported: download the file
         const url=URL.createObjectURL(blob);
         const a=document.createElement("a");
         a.href=url;a.download=`pyroalert-${city.id}.${ext}`;a.click();
         URL.revokeObjectURL(url);
         setStatus("done");
       }
-    }catch{setStatus("idle");}
+    }catch(e){
+      // User cancelled or failed
+      if(!(e instanceof DOMException&&e.name==="AbortError")) setStatus("error");
+      else setStatus("idle");
+    }
     setTimeout(()=>setStatus("idle"),3000);
   },[air,city,weather]);
 
   const shareImg=useCallback(async()=>{
     setStatus("working");
     try{
-      const blob=await getBlob();
+      const blob=await getPng();
       const file=new File([blob],`pyroalert-${city.id}.png`,{type:"image/png"});
-      if(navigator.canShare?.({files:[file]})){
-        await navigator.share({title:`Udara ${city.name}`,files:[file]});
+      if(typeof navigator.canShare==="function"&&navigator.canShare({files:[file]})){
+        await navigator.share({
+          title:`Udara ${city.name} — PyroAlert`,
+          text:`ISPU ${air.ispuNow?.value??""} di ${city.name}`,
+          files:[file],
+        });
         setStatus("done");
       } else { await dl(); return; }
-    }catch{/*cancelled*/}
+    }catch(e){
+      if(!(e instanceof DOMException&&e.name==="AbortError")) await dl();
+      else setStatus("idle");
+    }
     setTimeout(()=>setStatus("idle"),2500);
-  },[city,dl,getBlob]);
+  },[air.ispuNow,city,dl,getPng]);
 
   const shareWA=useCallback(async()=>{
+    // Try image file share first; fall back to text link
     setStatus("working");
     try{
-      const blob=await getBlob();
+      const blob=await getPng();
       const file=new File([blob],`pyroalert-${city.id}.png`,{type:"image/png"});
-      if(navigator.canShare?.({files:[file]})){
+      if(typeof navigator.canShare==="function"&&navigator.canShare({files:[file]})){
         await navigator.share({files:[file],title:`Udara ${city.name}`});
         setStatus("done");setTimeout(()=>setStatus("idle"),2500);return;
       }
@@ -574,75 +641,97 @@ function ShareModal({city,air,weather,onClose}:ModalProps){
     const txt=`Udara ${city.name} ISPU ${air.ispuNow?.value??""} - ${air.ispuNow?.label??""}\n\nhttps://eduair.vercel.app/udara?kota=${city.id}\nvia @avlfarizii`;
     window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`,"_blank","noopener");
     setStatus("idle");
-  },[air.ispuNow,city,getBlob]);
+  },[air.ispuNow,city,getPng]);
 
   const cat=air.ispuNow?.category??"SEDANG";
   const th=THEME[cat]??FB;
 
-  const btnLabel={
-    idle:"",recording:"Merekam video (3 detik)...",
-    working:"Memproses...",done:"Berhasil!",
-  }[status];
+  const statusLabel:{[k:string]:string}={
+    idle:"",recording:"Merekam animasi (4 detik)...",
+    working:"Memproses...",done:"Berhasil!",error:"Gagal, coba lagi",
+  };
 
   return createPortal(
     <div className="fixed inset-0 z-[300] flex items-end sm:items-center sm:justify-center">
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-md" onClick={onClose}/>
+      <div className="absolute inset-0 bg-black/75 backdrop-blur-md" onClick={status==="idle"?onClose:undefined}/>
       <div className="relative z-10 w-full sm:max-w-[390px] bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl overflow-hidden max-h-[96dvh] flex flex-col">
+
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden flex-shrink-0">
           <div className="w-10 h-1 rounded-full bg-slate-200"/>
         </div>
+
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-3 pb-3 flex-shrink-0">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest" style={{color:th.accent}}>
-              Bagikan kartu animasi 9:16
+              Bagikan kartu animasi
             </p>
             <p className="text-slate-900 font-black text-lg">{city.name}</p>
           </div>
-          <button onClick={onClose} className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700">
+          <button onClick={onClose} disabled={status==="recording"}
+            className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-40">
             <X size={15}/>
           </button>
         </div>
-        {/* Preview */}
+
+        {/* Live preview */}
         <div className="flex-1 overflow-y-auto px-5 pb-2 min-h-0 flex flex-col items-center gap-2">
           <LivePreview city={city} air={air} weather={weather}
-            onCanvasReady={cv=>{fullRef.current=cv;}}/>
-          <p className="text-[10px] text-slate-400 text-center">
-            Preview animasi live · kartu bergerak saat dibagikan
-          </p>
+            onCanvasReady={cv=>{previewCanvasRef.current=cv;}}/>
+
+          {status==="recording" && (
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"/>
+              Merekam animasi 4 detik...
+            </div>
+          )}
+          {status!=="recording" && (
+            <p className="text-[10px] text-slate-400 text-center">
+              Preview animasi live · video bergerak saat dibagikan
+            </p>
+          )}
         </div>
+
         {/* Buttons */}
         <div className="flex-shrink-0 px-5 pb-6 pt-3 flex flex-col gap-2 border-t border-slate-100">
-          {/* Video share (MP4 animated) */}
-          {canRecord && (
+
+          {/* VIDEO (MP4 animated) — the main CTA */}
+          {recordSupport && (
             <button onClick={shareVideo} disabled={status!=="idle"}
-              className="flex items-center justify-center gap-2.5 w-full rounded-2xl py-4 font-black text-sm text-white disabled:opacity-50 transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{background:`linear-gradient(90deg,${th.mid},${th.light})`}}>
+              className="flex items-center justify-center gap-2.5 w-full rounded-2xl py-4 font-black text-sm text-white disabled:opacity-55 transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{background:`linear-gradient(90deg,${th.mid},${th.accent})`}}>
               <Video size={17}/>
-              {status==="recording" ? btnLabel : "Bagikan Video Animasi (IG Story / WA)"}
+              {status==="idle" ? "Bagikan Video Animasi (IG / WA)" : statusLabel[status]}
             </button>
           )}
-          {/* Image share */}
+
+          {/* PNG image share */}
           <button onClick={shareImg} disabled={status!=="idle"}
-            className="flex items-center justify-center gap-2.5 w-full rounded-2xl py-3.5 font-bold text-sm text-white disabled:opacity-50 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2.5 w-full rounded-2xl py-3.5 font-bold text-sm text-white disabled:opacity-55 active:scale-[0.98]"
             style={{background:th.accent}}>
             <Share2 size={16}/>
-            {status==="working"||status==="done" ? btnLabel : "Bagikan Gambar (PNG)"}
+            {status==="working"||status==="done" ? statusLabel[status] : "Bagikan Gambar (PNG)"}
           </button>
+
           {/* WhatsApp */}
           <button onClick={shareWA} disabled={status!=="idle"}
-            className="flex items-center justify-center gap-2.5 w-full bg-[#25D366] hover:bg-[#1db954] text-white rounded-2xl py-3.5 font-bold text-sm disabled:opacity-50 active:scale-[0.98]">
+            className="flex items-center justify-center gap-2.5 w-full bg-[#25D366] hover:bg-[#1db954] text-white rounded-2xl py-3.5 font-bold text-sm disabled:opacity-55 active:scale-[0.98]">
             <MessageCircle size={16}/>WhatsApp
           </button>
+
           {/* Download PNG */}
           <button onClick={dl} disabled={status!=="idle"}
-            className="flex items-center justify-center gap-2.5 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl py-3.5 font-bold text-sm disabled:opacity-50 active:scale-[0.98]">
+            className="flex items-center justify-center gap-2.5 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl py-3.5 font-bold text-sm disabled:opacity-55 active:scale-[0.98]">
             <Download size={16}/>Unduh PNG
           </button>
-          <p className="text-center text-[10px] text-slate-400 px-2">
-            Video = animasi bergerak (MP4 / WebM) untuk IG Story dan WA Status
-          </p>
+
+          <div className="rounded-2xl bg-slate-50 border border-slate-100 px-4 py-3 text-[11px] text-slate-500 leading-relaxed">
+            <p className="font-semibold text-slate-700 mb-1">Cara share ke Instagram Story:</p>
+            <p>1. Tap "Bagikan Video Animasi" — pilih Instagram di share sheet</p>
+            <p>2. Atau: Unduh video → buka IG → buat Story → pilih dari galeri</p>
+            <p className="text-slate-400 mt-1">Video animasi MP4 berjalan otomatis di Stories.</p>
+          </div>
         </div>
       </div>
     </div>,
