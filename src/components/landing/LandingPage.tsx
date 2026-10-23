@@ -182,14 +182,14 @@ export function LandingPage() {
       {/* ══ STATS ═══════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-white">
         <div className="max-w-5xl mx-auto">
-          <Reveal><p className="text-center text-xs font-bold text-orange-500 uppercase tracking-widest mb-2">Fakta Karhutla 2023</p></Reveal>
-          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-12">Satu musim kemarau.<br />Ribuan jam udara berbahaya.</h2></Reveal>
+          <Reveal><p className="text-center text-xs font-bold text-orange-500 uppercase tracking-widest mb-2">PyroAlert dalam Angka</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-12">Satu platform.<br />Seluruh Indonesia terpantau.</h2></Reveal>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
-              { n: 253, s: " jam",     label: "Daring Darurat di Palangka Raya (Sep–Okt 2023)", c: "text-red-500" },
-              { n: 40,  s: " klaster", label: "Titik api aktif terdeteksi rata-rata per hari", c: "text-orange-500" },
-              { n: 128, s: " sekolah", label: "Sekolah dipantau di 8 kota rawan karhutla", c: "text-blue-600" },
-              { n: 66,  s: " kota",    label: "Kota di seluruh Indonesia dari Sabang sampai Merauke", c: "text-emerald-600" },
+              { n: 66,  s: " kota",    label: "Kota dipantau dari Sabang sampai Merauke, real-time", c: "text-emerald-600" },
+              { n: 3,   s: " satelit", label: "Satelit NASA VIIRS memindai Indonesia setiap 12 jam", c: "text-orange-500" },
+              { n: 128, s: " sekolah", label: "Sekolah dengan rekomendasi status otomatis per jam", c: "text-blue-600" },
+              { n: 10,  s: " menit",   label: "Interval pembaruan data udara dan cuaca dari CAMS", c: "text-red-500" },
             ].map((s, i) => (
               <Reveal key={i} delay={i * 80}>
                 <div className="text-center p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all">
@@ -304,46 +304,37 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══ BACKTEST ════════════════════════════════════════════ */}
+      {/* ══ ENGINE RULES ════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-white">
         <div className="max-w-4xl mx-auto">
-          <Reveal from="left"><p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Validasi Historis — Bukan Data Live</p></Reveal>
-          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-3">Engine divalidasi dengan data historis 2023</h2></Reveal>
-          <Reveal delay={120}><p className="text-center text-slate-400 mb-10 max-w-xl mx-auto">1.464 jam data PM2.5 historis Sep–Okt 2023 per kota. <span className="font-semibold text-slate-600">Data live di app berasal langsung dari Open-Meteo CAMS realtime.</span></p></Reveal>
-          <div className="grid md:grid-cols-3 gap-5">
+          <Reveal from="left"><p className="text-center text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Aturan Engine — Data Real-time</p></Reveal>
+          <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-slate-900 mb-3">Bagaimana status sekolah dihitung?</h2></Reveal>
+          <Reveal delay={120}><p className="text-center text-slate-400 mb-10 max-w-xl mx-auto">Engine membaca ISPU per jam dari <span className="font-semibold text-slate-600">Open-Meteo CAMS real-time</span> dan menerapkan aturan ini secara otomatis setiap 10 menit.</p></Reveal>
+          <div className="grid md:grid-cols-2 gap-5">
             {[
-              { city: "Palangka Raya", prov: "Kalimantan Tengah", daring: 253, waspada: 355, normal: 770, note: "Kebakaran gambut masif Kalteng 2023" },
-              { city: "Jambi",         prov: "Provinsi Jambi",    daring: 0,   waspada: 12,  normal: 1452, note: "Musim kemarau lebih ringan" },
-              { city: "Pekanbaru",     prov: "Riau",              daring: 0,   waspada: 61,  normal: 1403, note: "Asap kiriman dari Kalteng" },
-            ].map((c, i) => (
-              <Reveal key={i} delay={i * 100}>
-                <div className="rounded-3xl border border-slate-200 p-5 hover:shadow-md transition-all">
-                  <p className="text-base font-black text-slate-800">{c.city}</p>
-                  <p className="text-xs text-slate-400 mb-4">{c.prov}</p>
-                  {[
-                    { label: "Daring Darurat", val: c.daring,  total: 1464, color: "bg-red-500",   text: "text-red-500"   },
-                    { label: "Waspada/Hybrid", val: c.waspada, total: 1464, color: "bg-amber-400", text: "text-amber-500" },
-                    { label: "Normal",         val: c.normal,  total: 1464, color: "bg-emerald-400",text: "text-emerald-600"},
-                  ].map(r => (
-                    <div key={r.label} className="mb-2">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className={`font-semibold ${r.text}`}>{r.label}</span>
-                        <span className="font-bold tabular-nums text-slate-600">{r.val} jam</span>
-                      </div>
-                      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                        <div className={`h-full ${r.color} rounded-full transition-all duration-1000`}
-                          style={{ width: `${(r.val / r.total) * 100}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                  <p className="text-xs text-slate-400 mt-3 italic">{c.note}</p>
+              { code: "NORMAL",        color: "border-emerald-200 bg-emerald-50", badge: "bg-emerald-500", label: "Normal",        rule: "ISPU ≤ 100 selama 3 jam berturut-turut setelah kondisi berbahaya, atau belum ada peringatan.", example: "Udara bersih. Sekolah tatap muka seperti biasa." },
+              { code: "WASPADA",       color: "border-blue-200 bg-blue-50",       badge: "bg-blue-500",    label: "Waspada",       rule: "ISPU > 100 selama minimal 1 jam. Mesin langsung meng-update status.", example: "Kurangi olahraga outdoor. Batasi kegiatan upacara." },
+              { code: "HYBRID",        color: "border-amber-200 bg-amber-50",     badge: "bg-amber-500",   label: "Hybrid",        rule: "ISPU > 150 selama 3 jam berturut-turut.", example: "Sebagian siswa belajar dari rumah, sebagian tatap muka terbatas." },
+              { code: "DARING_DARURAT",color: "border-red-200 bg-red-50",         badge: "bg-red-600",     label: "Daring Darurat",rule: "ISPU > 200 selama 2 jam berturut-turut. Status paling kritis.", example: "Seluruh kegiatan tatap muka dihentikan. Belajar dari rumah penuh." },
+            ].map((s, i) => (
+              <Reveal key={i} delay={i * 80}>
+                <div className={`rounded-3xl border-2 ${s.color} p-5 hover:shadow-md transition-all`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className={`${s.badge} text-white text-xs font-black px-3 py-1.5 rounded-full`}>{s.label}</span>
+                  </div>
+                  <p className="text-sm font-semibold text-slate-800 mb-1">Aturan: <span className="font-normal text-slate-600">{s.rule}</span></p>
+                  <p className="text-xs text-slate-500 italic">{s.example}</p>
                 </div>
               </Reveal>
             ))}
           </div>
+          <Reveal delay={360}>
+            <div className="mt-8 rounded-2xl bg-slate-50 border border-slate-200 p-4 text-center">
+              <p className="text-xs text-slate-500">Setelah mesin memberi rekomendasi, <strong className="text-slate-700">Kepala Sekolah/Dinas harus menyetujui</strong> sebelum status berlaku resmi. Mesin hanya alat bantu — manusia yang memutuskan.</p>
+            </div>
+          </Reveal>
         </div>
       </section>
-
       {/* ══ JUJUR KETERBATASAN ══════════════════════════════════ */}
       <section className="py-20 px-5 bg-amber-50 border-y border-amber-100">
         <div className="max-w-4xl mx-auto">

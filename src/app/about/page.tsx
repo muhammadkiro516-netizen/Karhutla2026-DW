@@ -1,86 +1,187 @@
 import type { Metadata } from "next";
-import { Card } from "@/components/ui/Card";
+import { Satellite, Wind, Flame, ShieldCheck, AlertTriangle, Database, BookOpen, Users } from "lucide-react";
+import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Tentang PyroAlert Karhutla '26",
-  description: "Cara kerja, keterbatasan, dan sumber data PyroAlert.",
+  title: "Tentang PyroAlert — Karhutla '26",
+  description: "Cara kerja, sumber data, dan keterbatasan PyroAlert.",
 };
+
+function Section({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <section className={`rounded-3xl p-6 ${className}`}>{children}</section>;
+}
+
+function Badge({ children, color }: { children: React.ReactNode; color: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-white" style={{ backgroundColor: color }}>
+      {children}
+    </span>
+  );
+}
 
 export default function AboutPage() {
   return (
-    <div className="p-4 max-w-2xl mx-auto flex flex-col gap-6 pb-20">
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tentang PyroAlert Karhutla '26</h1>
+    <div className="max-w-2xl mx-auto px-4 pt-4 pb-24 flex flex-col gap-5">
 
-      <Card>
-        <h2 className="text-base font-semibold mb-2">Masalah yang Kami Coba Selesaikan</h2>
-        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-          Setiap musim kemarau, asap karhutla menutup langit Sumatera dan Kalimantan. Orang tua
-          bingung: apakah aman mengirim anak ke sekolah? Kepala sekolah butuh rekomendasi berbasis
-          data, bukan perkiraan. PyroAlert Karhutla '26 mengubah data satelit dan kualitas udara menjadi
-          keputusan yang jelas.
-        </p>
-      </Card>
-
-      <Card>
-        <h2 className="text-base font-semibold mb-3">Cara Kerja (4 Langkah)</h2>
-        <svg viewBox="0 0 480 80" className="w-full mb-3" aria-label="Alur: Data → Hitung → Rekomendasi → Persetujuan manusia">
-          {[
-            { x: 10, label: "Data", sub: "Satelit & API" },
-            { x: 130, label: "Hitung", sub: "ISPU + Angin" },
-            { x: 250, label: "Rekomen-dasi", sub: "Mesin" },
-            { x: 370, label: "Setujui", sub: "Manusia" },
-          ].map((s, i) => (
-            <g key={s.label}>
-              <rect x={s.x} y={10} width={90} height={50} rx={8} fill="#3b82f6" opacity={0.1} />
-              <text x={s.x + 45} y={32} textAnchor="middle" fontSize={11} fontWeight="600" fill="currentColor">{s.label}</text>
-              <text x={s.x + 45} y={48} textAnchor="middle" fontSize={9} fill="#94a3b8">{s.sub}</text>
-              {i < 3 && <text x={s.x + 100} y={37} textAnchor="middle" fontSize={14} fill="#94a3b8">→</text>}
-            </g>
-          ))}
-        </svg>
-        <ol className="text-sm text-slate-600 dark:text-slate-300 space-y-1 list-decimal list-inside leading-relaxed">
-          <li>Data PM2.5 dari Open-Meteo CAMS + titik api dari NASA FIRMS VIIRS.</li>
-          <li>Konversi ke ISPU (P.14/2020), simulasi sebaran angin, status sekolah dihitung otomatis.</li>
-          <li>Mesin merekomendasikan status: Normal, Waspada, Hybrid, atau Daring Darurat.</li>
-          <li>Kepala Sekolah/Dinas menyetujui status resmi — mesin hanya membantu, manusia yang memutuskan.</li>
-        </ol>
-      </Card>
-
-      <Card>
-        <h2 className="text-base font-semibold mb-2">Kebaruan</h2>
-        <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1 leading-relaxed list-disc list-inside">
-          <li>Menggabungkan 3 sumber data (udara, satelit, cuaca) dalam satu tampilan keputusan.</li>
-          <li>Simulasi sebaran asap berbasis angin per jam dari titik api nyata.</li>
-          <li>Log keputusan hash-chain — tidak bisa diubah tanpa terdeteksi.</li>
-          <li>QR poster sekolah — orang tua bisa cek status tanpa install apapun.</li>
-        </ul>
-      </Card>
-
-      <Card>
-        <h2 className="text-base font-semibold mb-2">Keterbatasan (Penting)</h2>
-        <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1 leading-relaxed list-disc list-inside">
-          <li>CAMS ≈ model resolusi 40 km, bukan pengukuran stasiun tanah.</li>
-          <li>Titik panas (hotspot) ≠ kebakaran terkonfirmasi — bisa berupa lahan gambut yang membara.</li>
-          <li>Model sebaran asap sangat sederhana — bukan prakiraan BMKG/BNPB.</li>
-          <li>Metadata EXIF foto dapat dipalsukan — bukan bukti hukum.</li>
-          <li>Bukan pengganti sistem resmi BMKG, BNPB, atau Dinas Kesehatan.</li>
-        </ul>
-      </Card>
-
-      <Card>
-        <h2 className="text-base font-semibold mb-2">Sumber Data</h2>
-        <div className="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 leading-relaxed">
-          <p>• <strong>Kualitas Udara:</strong> Open-Meteo (CAMS Reanalysis) — CC BY 4.0</p>
-          <p>• <strong>Titik Api:</strong> NASA FIRMS VIIRS SNPP/NOAA20/NOAA21 — publik</p>
-          <p>• <strong>Cuaca/Angin:</strong> Open-Meteo GFS/ICON — gratis</p>
-          <p>• <strong>Fasilitas Kesehatan:</strong> OpenStreetMap (ODbL)</p>
-          <p>• <strong>Ambang ISPU:</strong> Permen LHK P.14/MENLHK/SETJEN/KUM.1/7/2020</p>
+      {/* ── Hero ── */}
+      <div className="rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 p-6 text-white relative overflow-hidden">
+        <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-orange-500/10" />
+        <div className="absolute -right-2 -bottom-4 w-24 h-24 rounded-full bg-red-500/10" />
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
+              <Flame size={18} className="text-white" />
+            </div>
+            <div>
+              <p className="font-black text-lg leading-tight">Pyro<span className="text-orange-400">Alert</span></p>
+              <p className="text-xs text-white/50">Karhutla &apos;26</p>
+            </div>
+          </div>
+          <h1 className="text-2xl font-black mb-2 leading-tight">Sistem Peringatan Dini<br />Kebakaran Hutan Indonesia</h1>
+          <p className="text-sm text-white/70 leading-relaxed">
+            Menyatukan data satelit NASA, model udara Copernicus, dan cuaca real-time
+            menjadi satu keputusan yang bisa langsung diambil tindakan — oleh orang tua,
+            kepala sekolah, dan petugas posko.
+          </p>
+          <div className="flex gap-2 mt-4 flex-wrap">
+            <Badge color="#f97316">Real-time</Badge>
+            <Badge color="#3b82f6">66 Kota</Badge>
+            <Badge color="#22c55e">Gratis</Badge>
+            <Badge color="#8b5cf6">Open Data</Badge>
+          </div>
         </div>
-      </Card>
+      </div>
 
-      <p className="text-xs text-slate-400 text-center">
-        PyroAlert Karhutla &apos;26 adalah proyek riset terbuka. Kode sumber tersedia di GitHub.
-      </p>
+      {/* ── Masalah ── */}
+      <Section className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-100">
+        <div className="flex items-center gap-2 mb-3">
+          <Users size={16} className="text-red-500" />
+          <p className="text-xs font-bold uppercase tracking-widest text-red-500">Masalah yang Diselesaikan</p>
+        </div>
+        <p className="text-slate-700 text-sm leading-relaxed mb-3">
+          Setiap musim kemarau, asap karhutla menutup langit Sumatera dan Kalimantan.
+          Orang tua, kepala sekolah, dan petugas posko menghadapi pertanyaan yang sama
+          tanpa data yang cukup untuk menjawabnya:
+        </p>
+        <div className="flex flex-col gap-2">
+          {[
+            { q: "Apakah aman kirim anak ke sekolah hari ini?", who: "Orang tua" },
+            { q: "Data mana yang saya pakai untuk meliburkan sekolah?", who: "Kepala Sekolah" },
+            { q: "Dari arah mana asap datang dan seberapa cepat?", who: "Petugas Posko" },
+          ].map(item => (
+            <div key={item.who} className="bg-white rounded-2xl px-4 py-3 border border-red-100">
+              <p className="text-sm text-slate-700 italic">&ldquo;{item.q}&rdquo;</p>
+              <p className="text-[10px] font-bold text-red-400 uppercase tracking-wide mt-1">{item.who}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Cara Kerja ── */}
+      <Section className="bg-white border border-slate-100 shadow-sm">
+        <div className="flex items-center gap-2 mb-4">
+          <BookOpen size={16} className="text-blue-500" />
+          <p className="text-xs font-bold uppercase tracking-widest text-blue-500">Cara Kerja</p>
+        </div>
+        <div className="flex flex-col gap-3">
+          {[
+            { n:"01", Icon:Satellite, color:"bg-blue-600", title:"Satelit NASA pindai Indonesia tiap 12 jam",
+              body:"3 satelit VIIRS mendeteksi panas permukaan bumi secara real-time. Data masuk ke server dalam 3 jam." },
+            { n:"02", Icon:Wind, color:"bg-sky-500", title:"Copernicus CAMS hitung PM2.5 per jam",
+              body:"Model atmosfer 40 km estimasi partikel halus. Dikonversi ke ISPU sesuai Permen LHK P.14/2020." },
+            { n:"03", Icon:Flame, color:"bg-amber-500", title:"Engine hitung status sekolah + arah asap",
+              body:"Waspada (>100, 1j), Hybrid (>150, 3j), Daring Darurat (>200, 2j). Simulasi asap dari angin real-time." },
+            { n:"04", Icon:ShieldCheck, color:"bg-emerald-600", title:"Manusia setujui — baru resmi berlaku",
+              body:"Mesin hanya rekomendasi. Log audit hash-chain tidak bisa diubah. Status dikirim via WhatsApp 1 klik." },
+          ].map((s,i) => (
+            <div key={i} className="flex gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
+              <div className={`w-8 h-8 rounded-xl ${s.color} text-white flex items-center justify-center text-xs font-black flex-shrink-0`}>{s.n}</div>
+              <div>
+                <p className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                  <s.Icon size={13} className="text-slate-400" /> {s.title}
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Sumber Data ── */}
+      <Section className="bg-slate-950 text-white">
+        <div className="flex items-center gap-2 mb-4">
+          <Database size={16} className="text-orange-400" />
+          <p className="text-xs font-bold uppercase tracking-widest text-orange-400">Sumber Data</p>
+        </div>
+        <div className="flex flex-col gap-3">
+          {[
+            { name:"NASA FIRMS VIIRS", desc:"Titik api real-time dari 3 satelit (SNPP, NOAA-20, NOAA-21). Gratis, publik.",
+              link:"https://firms.modaps.eosdis.nasa.gov", logo:"/logo-nasa.png", logoW:60 },
+            { name:"Open-Meteo CAMS", desc:"PM2.5 per jam dari model atmosfer Copernicus. CC BY 4.0.",
+              link:"https://open-meteo.com", logo:null, logoW:0 },
+            { name:"BMKG", desc:"Referensi ambang ISPU resmi Indonesia (Permen LHK P.14/2020).",
+              link:"https://bmkg.go.id", logo:"/logo-bmkg.webp", logoW:44 },
+            { name:"OpenStreetMap", desc:"Data fasilitas kesehatan (rumah sakit, puskesmas). ODbL license.",
+              link:"https://openstreetmap.org", logo:null, logoW:0 },
+          ].map(src => (
+            <a key={src.name} href={src.link} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 transition-colors">
+              {src.logo ? (
+                <Image src={src.logo} alt={src.name} width={src.logoW} height={24}
+                  className="object-contain h-6 w-auto opacity-80 brightness-200 flex-shrink-0" />
+              ) : (
+                <div className="w-10 h-6 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[10px] font-black text-white/60 uppercase">{src.name.slice(0,3)}</span>
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white">{src.name}</p>
+                <p className="text-xs text-white/50 truncate">{src.desc}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Keterbatasan ── */}
+      <Section className="bg-amber-50 border border-amber-200">
+        <div className="flex items-center gap-2 mb-3">
+          <AlertTriangle size={16} className="text-amber-500" />
+          <p className="text-xs font-bold uppercase tracking-widest text-amber-500">Keterbatasan Penting</p>
+        </div>
+        <div className="flex flex-col gap-2">
+          {[
+            { title:"CAMS bukan alat ukur langsung", body:"Model 40 km/piksel. Selisih bisa 20–40% dari stasiun ISPU resmi di lapangan." },
+            { title:"Hotspot bukan kebakaran pasti", body:"Bisa aspal panas, pabrik, atau gambut membara di bawah tanah." },
+            { title:"Simulasi asap sangat sederhana", body:"Pakai 1 titik angin, bukan model dispersi BMKG/BNPB. Hanya indikasi arah." },
+            { title:"Bukan pengganti informasi resmi", body:"Selalu cek BMKG dan BNPB untuk keputusan darurat. PyroAlert hanyalah alat bantu." },
+          ].map(item => (
+            <div key={item.title} className="flex gap-3 items-start bg-white rounded-2xl px-4 py-3 border border-amber-100">
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-slate-800">{item.title}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{item.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ── Footer credit ── */}
+      <div className="text-center py-2">
+        <p className="text-xs text-slate-400">
+          PyroAlert Karhutla &apos;26 — dibuat oleh{" "}
+          <a href="https://instagram.com/avlfarizii" target="_blank" rel="noopener noreferrer"
+            className="text-slate-600 font-semibold hover:text-orange-500 transition-colors">
+            Muhammad Salman Al Farisi
+          </a>
+          {" · "}
+          <a href="https://instagram.com/avlfarizii" target="_blank" rel="noopener noreferrer"
+            className="text-orange-500 font-bold hover:text-orange-400 transition-colors">
+            @avlfarizii
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
