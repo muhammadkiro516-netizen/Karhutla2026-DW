@@ -12,6 +12,8 @@ import { TomorrowCard } from "@/components/udara/TomorrowCard";
 import { IspuChartLazy } from "@/components/udara/IspuChartLazy";
 import { OtherCities } from "@/components/udara/OtherCities";
 import { ReadAloud } from "@/components/udara/ReadAloud";
+import { HealthRiskCard } from "@/components/udara/HealthRiskCard";
+import { AirTrendSummary } from "@/components/udara/AirTrendSummary";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -29,8 +31,9 @@ export default function UdaraPage() {
   return (
     <div className="px-4 pt-4 pb-8 max-w-5xl mx-auto">
       <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:gap-6">
-        {/* Left column */}
+        {/* ── Left column ── */}
         <div className="flex flex-col gap-4">
+          {/* Big ISPU hero */}
           <AirHero
             city={airCity}
             envelope={airEnv}
@@ -39,9 +42,10 @@ export default function UdaraPage() {
             retry={airRetry}
           />
 
+          {/* PM2.5, kelembaban, angin pills */}
           <MetricPills air={airCity} weather={weatherCity} />
 
-          {/* Personal action card — what to do RIGHT NOW */}
+          {/* What to do right now */}
           <ActionCard
             cityName={city.name}
             status={status}
@@ -49,20 +53,27 @@ export default function UdaraPage() {
             vulnerable={vulnerable}
           />
 
+          {/* Health risk per group (real calculation from WHO + KLHK data) */}
+          <HealthRiskCard air={airCity} weather={weatherCity} />
+
+          {/* Smoke / drift hint from hotspot data */}
           <SmokeHint hotspots={hotspots} air={airCity} cityId={city.id} />
 
+          {/* Tomorrow forecast (shows after 18.00 local) */}
           {airCity && (
             <TomorrowCard tomorrow={airCity.tomorrow} city={city} />
           )}
 
+          {/* Read aloud */}
           <ReadAloud city={airCity} cityName={city.name} />
         </div>
 
-        {/* Right column */}
+        {/* ── Right column ── */}
         <div className="flex flex-col gap-4 mt-4 lg:mt-0">
+          {/* Hourly ISPU chart */}
           <Card>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-              Grafik Kualitas Udara
+              Grafik Kualitas Udara (48 jam)
             </p>
             {airCity ? (
               <IspuChartLazy hourly={airCity.hourly} tzLabel={airCity.tzLabel} />
@@ -71,6 +82,10 @@ export default function UdaraPage() {
             ) : null}
           </Card>
 
+          {/* 24-h trend summary: best/worst hour, hours unhealthy, trend direction */}
+          <AirTrendSummary air={airCity} />
+
+          {/* All 66 cities grouped by island */}
           <Card>
             <OtherCities allAir={allAir} />
           </Card>

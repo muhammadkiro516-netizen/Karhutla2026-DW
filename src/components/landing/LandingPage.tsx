@@ -188,7 +188,7 @@ export function LandingPage() {
               { n: 253, s: " jam",     label: "Daring Darurat di Palangka Raya (Sep–Okt 2023)", c: "text-red-500" },
               { n: 40,  s: " klaster", label: "Titik api aktif terdeteksi rata-rata per hari", c: "text-orange-500" },
               { n: 128, s: " sekolah", label: "Sekolah dipantau di 8 kota rawan karhutla", c: "text-blue-600" },
-              { n: 8,   s: " kota",    label: "Kota dari Pekanbaru hingga Bandung", c: "text-emerald-600" },
+              { n: 66,  s: " kota",    label: "Kota di seluruh Indonesia dari Sabang sampai Merauke", c: "text-emerald-600" },
             ].map((s, i) => (
               <Reveal key={i} delay={i * 80}>
                 <div className="text-center p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:shadow-md transition-all">
@@ -281,10 +281,10 @@ export function LandingPage() {
           <Reveal delay={60}><h2 className="text-center text-3xl md:text-4xl font-black text-white mb-12">Satu app, semua yang kamu butuhkan</h2></Reveal>
           <div className="grid md:grid-cols-2 gap-5">
             {[
-              { Icon: Wind,   grad: "from-blue-600 to-sky-500",     sh: "shadow-blue-500/20",   label: "Tab Udara",     desc: "ISPU per jam + grafik 48 jam. Tahu kondisi udara kotamu dan apa yang harus dilakukan sekarang.",    badge: "CAMS" },
-              { Icon: School, grad: "from-emerald-500 to-teal-500", sh: "shadow-emerald-500/20",label: "Tab Sekolah",   desc: "128 sekolah, 8 kota. Status otomatis, persetujuan Kepala Sekolah, log audit, QR poster, WhatsApp.", badge: "128 sekolah" },
+              { Icon: Wind,   grad: "from-blue-600 to-sky-500",     sh: "shadow-blue-500/20",   label: "Tab Udara",     desc: "ISPU per jam + grafik 48 jam + tren harian. Pantau kualitas udara 66 kota di seluruh Indonesia.",    badge: "CAMS" },
+              { Icon: School, grad: "from-emerald-500 to-teal-500", sh: "shadow-emerald-500/20",label: "Tab Sekolah",   desc: "128 sekolah, rekomendasi otomatis, persetujuan Kepala Sekolah, log audit, QR poster, kirim WhatsApp.", badge: "128 sekolah" },
               { Icon: Flame,  grad: "from-orange-500 to-red-500",   sh: "shadow-orange-500/20", label: "Tab Titik Api", desc: "Peta titik api NASA real-time. Klaster, ranking ancaman, simulasi asap berdasarkan arah angin.",      badge: "NASA FIRMS" },
-              { Icon: MapPin, grad: "from-violet-500 to-purple-500",sh: "shadow-violet-500/20", label: "Tab Posko",     desc: "40 fasilitas kesehatan terdekat. Stok APD real-time. Laporan warga + verifikasi foto EXIF.",        badge: "OSM" },
+              { Icon: MapPin, grad: "from-violet-500 to-purple-500",sh: "shadow-violet-500/20", label: "Tab Posko",     desc: "Fasilitas kesehatan terdekat dari 66 kota. Stok APD real-time. Laporan warga + verifikasi foto EXIF.",        badge: "OSM" },
             ].map((f, i) => (
               <Reveal key={i} delay={i * 80} from={i % 2 === 0 ? "left" : "right"}>
                 <div className={`rounded-3xl bg-slate-900 border border-slate-800 hover:border-slate-600 p-6 hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl ${f.sh}`}>
