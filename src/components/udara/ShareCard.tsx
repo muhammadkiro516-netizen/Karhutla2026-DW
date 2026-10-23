@@ -275,51 +275,54 @@ function drawFrame(
 
   // ── Top pill ──
   c.fillStyle="rgba(255,255,255,0.12)";
-  rr(c,56,60,340,68,34);c.fill();
+  rr(c,56,60,CW-112,68,34);c.fill();
   c.fillStyle="#fff";c.font="bold 28px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
   c.textAlign="left";c.fillText("PyroAlert  Karhutla 26",88,103);
   c.textAlign="right";c.fillStyle="rgba(255,255,255,0.5)";
   c.font="26px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.fillText(timeStr,CW-56,103);
+  c.fillText(timeStr,CW-76,103);
 
-  // ── City ──
+  // ── Province + City — fully centred ──
   c.textAlign="center";
   c.fillStyle="rgba(255,255,255,0.45)";
   c.font="34px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.fillText(city.province.toUpperCase(),CW/2-80,210);
+  c.fillText(city.province.toUpperCase(),CW/2,210);
   c.fillStyle="#fff";
   c.font=`bold ${city.name.length>12?68:84}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
-  c.fillText(city.name,CW/2-80,322);
+  c.fillText(city.name,CW/2,322);
 
-  // ── ISPU number ──
-  const numGlow=c.createRadialGradient(180,650,20,180,650,260);
-  numGlow.addColorStop(0,"rgba(255,255,255,0.20)");numGlow.addColorStop(1,"transparent");
-  c.fillStyle=numGlow;c.fillRect(0,390,500,380);
+  // ── ISPU number — left-aligned but centred in left half ──
+  // Left half = 0..CW*0.62  right half = char
+  const leftCX = CW * 0.31;
+  const numGlow=c.createRadialGradient(leftCX,640,30,leftCX,640,280);
+  numGlow.addColorStop(0,"rgba(255,255,255,0.22)");numGlow.addColorStop(1,"transparent");
+  c.fillStyle=numGlow;c.fillRect(0,390,CW*0.65,380);
   c.fillStyle="#ffffff";
-  c.textAlign="left";
-  c.font=`900 ${ispu>=300?270:310}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
-  c.fillText(String(ispu),60,700);
+  c.textAlign="center";
+  c.font=`900 ${ispu>=300?260:300}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  c.fillText(String(ispu),leftCX,700);
 
   // accent line under number
-  const lineY=720;
-  const lg=c.createLinearGradient(60,lineY,480,lineY);
+  const lineY=726;
+  const lg=c.createLinearGradient(56,lineY,CW*0.62,lineY);
   lg.addColorStop(0,th.accent);lg.addColorStop(1,"transparent");
-  c.strokeStyle=lg;c.lineWidth=5;c.beginPath();c.moveTo(60,lineY);c.lineTo(480,lineY);c.stroke();
+  c.strokeStyle=lg;c.lineWidth=5;c.beginPath();c.moveTo(56,lineY);c.lineTo(CW*0.62,lineY);c.stroke();
 
-  // category badge
-  rr(c,60,734,300,58,29);
+  // category badge — centred in left half
+  const bdgW=320,bdgX=leftCX-bdgW/2;
+  rr(c,bdgX,740,bdgW,60,30);
   c.fillStyle=`rgba(${ar},${ag},${ab},0.22)`;c.fill();
   c.strokeStyle=th.accent;c.lineWidth=1.5;c.stroke();
   c.fillStyle=th.accent;
-  c.font="bold 32px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.textAlign="center";c.fillText(th.label,60+150,773);
+  c.font="bold 34px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  c.textAlign="center";c.fillText(th.label,leftCX,781);
 
   // status word
-  c.fillStyle="rgba(255,255,255,0.55)";
+  c.fillStyle="rgba(255,255,255,0.60)";
   c.font="30px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.fillText(th.statusWord+" UDARA",60+150,822);
+  c.fillText(th.statusWord+" UDARA",leftCX,832);
 
-  // desc
+  // desc — centred across full width
   const descMap:{[k:string]:string}={
     BAIK:"Aman beraktivitas di luar ruangan",
     SEDANG:"Bisa keluar, tetap perhatikan gejala",
@@ -327,12 +330,13 @@ function drawFrame(
     SANGAT_TIDAK_SEHAT:"Hindari keluar rumah sebisa mungkin",
     BERBAHAYA:"Tetap di dalam, tutup semua ventilasi",
   };
-  c.fillStyle="rgba(255,255,255,0.40)";
+  c.fillStyle="rgba(255,255,255,0.42)";
   c.font="28px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.textAlign="center";c.fillText(descMap[cat]??"",CW/2-80,878);
+  c.textAlign="center";c.fillText(descMap[cat]??"",CW/2,894);
 
-  // ── Character ──
-  drawChar(c,CW*.78,gY-8,cat,1.08);
+  // ── Character — drawn RIGHT side, overlapping card top ──
+  // baseY is where the feet sit — place just above ground line, partially on card
+  drawChar(c, CW*0.80, gY+20, cat, 1.15);
 
   // ── White card ──
   const cdX=52,cdY=CH*.57,cdW=CW-104,cdH=CH-cdY-90;
