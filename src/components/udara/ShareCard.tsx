@@ -580,11 +580,14 @@ interface PreviewProps{
   onCanvasReady:(cv:HTMLCanvasElement)=>void;
 }
 function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
+  const wrapRef=useRef<HTMLDivElement>(null);
   const ref=useRef<HTMLCanvasElement>(null);
   const tRef=useRef(0);
   const rafRef=useRef(0);
   const embersRef=useRef<Ember[]>([]);
   const qrImgRef=useRef<HTMLImageElement|null>(null);
+  // Actual pixel dimensions used for preview rendering (updated on resize)
+  const dimRef=useRef({w:270,h:480});
 
   const cat=air.ispuNow?.category??"SEDANG";
   const th=THEME[cat]??FB;
@@ -596,29 +599,49 @@ function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
   },[city.id]);
 
   useEffect(()=>{
-    const cv=ref.current;if(!cv)return;
-    // Size preview canvas
-    cv.width=270;cv.height=480;
+    const cv=ref.current;
+    const wrap=wrapRef.current;
+    if(!cv||!wrap)return;
+
+    // Measure container and size canvas to fill it (9:16 ratio)
+    const measureAndSize=()=>{
+      const maxW=wrap.clientWidth||270;
+      // Cap at 390 so it doesn't become huge on desktop
+      const pw=Math.min(maxW,390);
+      const ph=Math.round(pw*(16/9));
+      dimRef.current={w:pw,h:ph};
+      cv.width=pw;cv.height=ph;
+      cv.style.width=`${pw}px`;
+      cv.style.height=`${ph}px`;
+    };
+    measureAndSize();
+
+    // Watch for container resize (e.g. sheet animation finishing)
+    const ro=new ResizeObserver(()=>{measureAndSize();});
+    ro.observe(wrap);
+
     const ctx=cv.getContext("2d");if(!ctx)return;
 
-    // Notify parent immediately so it can use this canvas for recording
+    // Notify parent so it can reuse this canvas ref
     onCanvasReady(cv);
 
     const loop=()=>{
       tRef.current+=0.048;
       const t=tRef.current;
+      const {w,h}=dimRef.current;
 
       // Draw full frame at 1080×1920 then scale down into preview
       const off=document.createElement("canvas");
       off.width=CW;off.height=CH;
       drawFrame(off,city,air,weather,t,qrImgRef.current);
-      ctx.drawImage(off,0,0,270,480);
+      ctx.drawImage(off,0,0,w,h);
 
-      // Ember particles on preview
+      // Ember particles scaled to preview size
+      const scaleX=w/270, scaleY=h/480;
       if(Math.random()<.45) embersRef.current.push({
-        x:Math.random()*270,y:480*.88,
-        vx:(Math.random()-.5)*1.5,vy:-(2+Math.random()*3),
-        r:1.2+Math.random()*2.4,a:.9,
+        x:Math.random()*w,y:h*.88,
+        vx:(Math.random()-.5)*1.5*scaleX,vy:-(2+Math.random()*3)*scaleY,
+        r:(1.2+Math.random()*2.4)*Math.min(scaleX,scaleY),a:.9,
         col:[th.accent,"#fbbf24","#fb923c"][Math.floor(Math.random()*3)],
       });
       embersRef.current=embersRef.current.filter(e=>e.a>.04);
@@ -630,18 +653,21 @@ function LivePreview({city,air,weather,onCanvasReady}:PreviewProps){
       rafRef.current=requestAnimationFrame(loop);
     };
     loop();
-    return ()=>cancelAnimationFrame(rafRef.current);
+    return ()=>{cancelAnimationFrame(rafRef.current);ro.disconnect();};
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   return(
-    <div className="flex justify-center">
+    <div ref={wrapRef} className="w-full flex justify-center">
       <div className="relative rounded-3xl overflow-hidden"
-        style={{width:270,height:480,
+        style={{
+          width:"100%",maxWidth:390,
+          aspectRatio:"9/16",
           boxShadow:`0 0 40px ${th.accentGlow}, 0 8px 32px rgba(0,0,0,0.4)`,
-          border:`1.5px solid ${th.accent}55`}}>
-        {/* This canvas is attached to DOM — captureStream works */}
-        <canvas ref={ref} width={270} height={480} className="block w-full h-full"/>
+          border:`1.5px solid ${th.accent}55`,
+        }}>
+        {/* Canvas fills the wrapper; actual pixel size set by JS above */}
+        <canvas ref={ref} className="block w-full h-full"/>
         <div className="absolute inset-0 pointer-events-none rounded-3xl"
           style={{background:"linear-gradient(130deg,rgba(255,255,255,0.07) 0%,transparent 60%)"}}/>
       </div>
