@@ -201,6 +201,127 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ══ PENYEBAB KARHUTLA (2 sosok) ════════════════════════ */}
+      <section className="py-20 px-5 bg-slate-950 overflow-hidden">
+        <div className="max-w-5xl mx-auto">
+          <Reveal><p className="text-center text-xs font-bold text-orange-400 uppercase tracking-widest mb-3">Di Balik Asap</p></Reveal>
+          <Reveal delay={60}>
+            <h2 className="text-center text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
+              Dua Sosok Kuasa<br />
+              <span className="text-orange-400">Menolak</span> Kebakaran Hutan
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="text-center text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Karhutla bukan hanya soal api. Ada manusia di baliknya — yang memilih membakar lahan
+              karena murah dan cepat, dan yang memilih menutup mata demi kepentingan lain.
+              Kenali mereka.
+            </p>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Card 1 — gambar asli */}
+            <Reveal delay={100} from="left">
+              <div className="group relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
+                {/* Image */}
+                <div className="relative h-64 sm:h-72 overflow-hidden">
+                  <Image
+                    src="/penyebab-karhutla-1.png"
+                    alt="Sosok penyebab karhutla"
+                    fill
+                    className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
+                  {/* Badge */}
+                  <div className="absolute top-4 left-4 bg-orange-500/90 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+                    Penyebab #1
+                  </div>
+                </div>
+                {/* Text */}
+                <div className="p-5">
+                  <h3 className="text-lg font-black text-white mb-2">Pembuka Lahan dengan Api</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-3">
+                    Membakar lahan jauh lebih murah daripada menggunakan alat berat. Satu hektar bisa
+                    dibersihkan dalam beberapa jam. Biaya nyaris nol. Asap yang muncul? Itu urusan
+                    orang lain — begitu pikir mereka.
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { label: "Biaya hemat", val: "95%", sub: "vs alat berat" },
+                      { label: "Waktu kerja", val: "3 jam", sub: "per hektar" },
+                      { label: "Musim puncak", val: "Jul–Okt", sub: "kemarau" },
+                    ].map(s => (
+                      <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
+                        <p className="text-sm font-black text-orange-400 tabular-nums">{s.val}</p>
+                        <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
+                        <p className="text-[9px] text-slate-600">{s.sub}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Card 2 — sosok kedua (placeholder bergaya sama) */}
+            <Reveal delay={180} from="right">
+              <div className="group relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-red-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10">
+                {/* Placeholder visual */}
+                <div className="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-red-950 via-slate-900 to-slate-950 flex items-center justify-center">
+                  {/* Smoke rings as visual metaphor */}
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className="absolute rounded-full border border-red-500/20"
+                      style={{ width: `${(i + 1) * 100}px`, height: `${(i + 1) * 100}px`,
+                        animation: `ping ${2 + i * 0.7}s cubic-bezier(0,0,0.2,1) infinite`,
+                        animationDelay: `${i * 0.6}s` }} />
+                  ))}
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="w-16 h-16 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                      <Flame size={28} className="text-red-400" />
+                    </div>
+                    <span className="text-xs font-bold text-red-400/60 uppercase tracking-widest">Sosok Kedua</span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
+                  <div className="absolute top-4 left-4 bg-red-600/90 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+                    Penyebab #2
+                  </div>
+                </div>
+                {/* Text */}
+                <div className="p-5">
+                  <h3 className="text-lg font-black text-white mb-2">Korporasi &amp; Pembiaran Sistemik</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-3">
+                    Konsesi perkebunan dan HPH yang tidak mengawasi subkontraktor, ditambah penegakan
+                    hukum yang lemah, menciptakan impunitas. Lahan gambut dalam yang seharusnya tidak
+                    boleh dibakar — tetap terbakar tiap tahun.
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { label: "Konsesi aktif", val: "5.300+", sub: "di lahan gambut" },
+                      { label: "Repeat offender", val: "70%", sub: "titik api 2023" },
+                      { label: "Denda max", val: "Rp 10 M", sub: "jarang dieksekusi" },
+                    ].map(s => (
+                      <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
+                        <p className="text-sm font-black text-red-400 tabular-nums">{s.val}</p>
+                        <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
+                        <p className="text-[9px] text-slate-600">{s.sub}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Bottom note */}
+          <Reveal delay={300}>
+            <p className="text-center text-xs text-slate-600 mt-8 max-w-2xl mx-auto leading-relaxed">
+              Data: Global Forest Watch · KLHK Rekap Karhutla 2023 · Sipongi KLHK.
+              Angka bersifat indikatif untuk konteks edukatif.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ══ MASALAH ════════════════════════════════════════════ */}
       <section className="py-20 px-5 bg-gradient-to-br from-orange-50 to-red-50">
         <div className="max-w-4xl mx-auto">
@@ -394,8 +515,8 @@ export function LandingPage() {
       </section>
 
       {/* ══ FOOTER ══════════════════════════════════════════════ */}
-      <footer className="border-t border-slate-800 bg-slate-950 py-8 px-5 text-center text-xs text-slate-600">
-        <div className="flex items-center justify-center gap-4 mb-3">
+      <footer className="border-t border-slate-800 bg-slate-950 py-10 px-5 text-center text-xs text-slate-600">
+        <div className="flex items-center justify-center gap-4 mb-4">
           <Image src="/logo-nasa.png" alt="NASA" width={40} height={16} className="object-contain h-4 w-auto opacity-30 brightness-200" />
           <Image src="/logo-bmkg.webp" alt="BMKG" width={34} height={16} className="object-contain h-4 w-auto opacity-30 brightness-200" />
         </div>
@@ -407,7 +528,33 @@ export function LandingPage() {
           {" · "}
           <a href="https://openstreetmap.org" className="hover:text-slate-300 transition-colors">OpenStreetMap (ODbL)</a>
         </p>
-        <p>Bukan pengganti informasi resmi BMKG / BNPB / Dinas Kesehatan.</p>
+        <p className="mb-4">Bukan pengganti informasi resmi BMKG / BNPB / Dinas Kesehatan.</p>
+        {/* Author credit */}
+        <div className="flex items-center justify-center gap-2 pt-4 border-t border-slate-800/60">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+            <Flame size={11} className="text-white" />
+          </div>
+          <p className="text-slate-500 text-xs">
+            Dibuat oleh{" "}
+            <a
+              href="https://instagram.com/avlfarizii"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 font-semibold hover:text-orange-400 transition-colors"
+            >
+              Muhammad Salman Al Farisi
+            </a>
+            {" · "}
+            <a
+              href="https://instagram.com/avlfarizii"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-orange-500 hover:text-orange-400 font-bold transition-colors"
+            >
+              @avlfarizii
+            </a>
+          </p>
+        </div>
       </footer>
     </div>
   );

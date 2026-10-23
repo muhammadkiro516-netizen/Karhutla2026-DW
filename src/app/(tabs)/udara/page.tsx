@@ -17,6 +17,7 @@ import { AirTrendSummary } from "@/components/udara/AirTrendSummary";
 import { ExposureCalculator } from "@/components/udara/ExposureCalculator";
 import { WindCompass } from "@/components/udara/WindCompass";
 import { HourlyHeatmap } from "@/components/udara/HourlyHeatmap";
+import { ShareCard } from "@/components/udara/ShareCard";
 import { IspuGauge } from "@/components/udara/IspuGauge";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -51,7 +52,10 @@ export default function UdaraPage() {
           {/* 2. PM2.5 / humidity / wind pills */}
           <MetricPills air={airCity} weather={weatherCity} />
 
-          {/* 3. ISPU arc gauge with animated needle */}
+          {/* 3. Share button — before gauge so it's above the fold on mobile */}
+          <ShareCard city={city} air={airCity} weather={weatherCity} />
+
+          {/* 4. ISPU arc gauge with animated needle */}
           <IspuGauge air={airCity} />
 
           {/* 4. Personal action steps */}
