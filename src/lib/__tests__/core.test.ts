@@ -42,8 +42,8 @@ describe("pm25ToIspu", () => {
 });
 
 describe("geo", () => {
-  const pku = CITIES[0];
-  it("haversine Pekanbaru–Jambi ≈ 260 km", () => expect(haversineKm(pku, CITIES[2])).toBeGreaterThan(240));
+  const pku = CITIES.find((c) => c.id === "pekanbaru")!;
+  it("haversine Pekanbaru–Jambi ≈ 260 km", () => expect(haversineKm(pku, CITIES.find((c) => c.id === "jambi")!)).toBeGreaterThan(240));
   it("bearing due east ≈ 90", () => expect(bearingDeg({ lat: 0, lon: 100 }, { lat: 0, lon: 101 })).toBeCloseTo(90, 3));
   it("destination round-trips with haversine (property)", () =>
     fc.assert(fc.property(fc.double({ min: 0, max: 359.9, noNaN: true }), fc.double({ min: 1, max: 400, noNaN: true }), (b, km) => {
@@ -171,7 +171,7 @@ describe("hotspots", () => {
 });
 
 describe("evidence", () => {
-  const city = CITIES[0];
+  const city = CITIES.find((c) => c.id === "pekanbaru")!;
   const now = new Date("2026-10-21T10:00:00Z");
   const near = destination(city, 0, 5);
   it("verified when fresh and near", () => expect(classifyEvidence({ takenAt: new Date("2026-10-21T08:00:00Z"), gps: near }, city, now).status).toBe("TERVERIFIKASI"));
