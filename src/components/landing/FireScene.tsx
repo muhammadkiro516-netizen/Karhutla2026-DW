@@ -154,9 +154,10 @@ export function FireScene() {
       const sky = ctx!.createLinearGradient(0, 0, 0, H);
       sky.addColorStop(0, "#1a0a00");
       sky.addColorStop(0.35, "#7c2d12");
-      sky.addColorStop(0.65, "#ea580c");
-      sky.addColorStop(0.85, "#fbbf24");
-      sky.addColorStop(1, "#fde68a");
+      sky.addColorStop(0.60, "#ea580c");
+      sky.addColorStop(0.78, "#fbbf24");
+      sky.addColorStop(0.90, "#fde68a");
+      sky.addColorStop(1, "#fef3c7");
       ctx!.fillStyle = sky;
       ctx!.fillRect(0, 0, W, H);
 
@@ -170,9 +171,10 @@ export function FireScene() {
 
       // Ground
       const ground = ctx!.createLinearGradient(0, H * 0.7, 0, H);
-      ground.addColorStop(0, "#5c1a00");
-      ground.addColorStop(0.4, "#3d1300");
-      ground.addColorStop(1, "#1a0800");
+      ground.addColorStop(0, "#7c2d12");
+      ground.addColorStop(0.3, "#92400e");
+      ground.addColorStop(0.7, "#78350f");
+      ground.addColorStop(1, "#451a03");
       ctx!.fillStyle = ground;
       ctx!.beginPath();
       ctx!.moveTo(0, H * 0.72);
