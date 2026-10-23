@@ -86,6 +86,35 @@ export function LandingPage() {
       <section className="relative h-screen min-h-[640px] flex flex-col items-center justify-center overflow-hidden pt-[60px]">
         <FireScene />
         <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-black/80 z-10" />
+
+        {/* Prabowo — left figure, bottom-left, partial crop */}
+        <div className="absolute bottom-0 left-0 z-15 w-[180px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] overflow-hidden pointer-events-none select-none">
+          <div className="relative w-[360px] sm:w-[440px] md:w-[520px] lg:w-[600px] h-full -ml-0">
+            <Image
+              src="/penyebab-karhutla-1.png"
+              alt="Prabowo menolak karhutla"
+              fill
+              className="object-cover object-left-bottom"
+              sizes="300px"
+              style={{ objectPosition: "0% 100%" }}
+            />
+          </div>
+        </div>
+
+        {/* Gibran — right figure, bottom-right, partial crop */}
+        <div className="absolute bottom-0 right-0 z-15 w-[180px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] overflow-hidden pointer-events-none select-none">
+          <div className="relative w-[360px] sm:w-[440px] md:w-[520px] lg:w-[600px] h-full -mr-0 ml-auto">
+            <Image
+              src="/penyebab-karhutla-1.png"
+              alt="Gibran menolak karhutla"
+              fill
+              className="object-cover object-right-bottom"
+              sizes="300px"
+              style={{ objectPosition: "100% 100%" }}
+            />
+          </div>
+        </div>
+
         <div className={`relative z-20 text-center px-5 max-w-3xl mx-auto transition-all duration-800 ${heroOn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}>
           <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-1.5 rounded-full text-xs font-bold mb-6 backdrop-blur-sm animate-pulse">
             <span className="w-2 h-2 rounded-full bg-red-400" />
@@ -198,129 +227,6 @@ export function LandingPage() {
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ══ PENYEBAB KARHUTLA (2 sosok) ════════════════════════ */}
-      <section className="py-20 px-5 bg-slate-950 overflow-hidden">
-        <div className="max-w-5xl mx-auto">
-          <Reveal><p className="text-center text-xs font-bold text-orange-400 uppercase tracking-widest mb-3">Di Balik Asap</p></Reveal>
-          <Reveal delay={60}>
-            <h2 className="text-center text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
-              Dua Sosok Kuasa<br />
-              <span className="text-orange-400">Menolak</span> Kebakaran Hutan
-            </h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <p className="text-center text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Karhutla bukan hanya soal api. Ada dua sosok yang secara bersamaan menolak
-              pembakaran hutan — dengan kekuasaan, keberanian, dan tanggung jawab yang berbeda.
-            </p>
-          </Reveal>
-
-          {/* ── Full-width image: both figures together ── */}
-          <Reveal delay={140}>
-            <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 shadow-2xl shadow-orange-500/10 mb-8">
-              {/* Aspect ratio container — image is 1536×1024 = 3:2 */}
-              <div className="relative w-full" style={{ paddingBottom: "66.67%" }}>
-                <Image
-                  src="/penyebab-karhutla-1.png"
-                  alt="Dua sosok yang menolak kebakaran hutan"
-                  fill
-                  className="object-contain object-center"
-                  sizes="(max-width: 1024px) 100vw, 960px"
-                  priority
-                />
-                {/* Left label */}
-                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-orange-500/90 backdrop-blur-sm text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full">
-                  Sosok #1
-                </div>
-                {/* Right label */}
-                <div className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-red-600/90 backdrop-blur-sm text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full">
-                  Sosok #2
-                </div>
-                {/* Bottom gradient for text legibility */}
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-slate-950 to-transparent" />
-              </div>
-            </div>
-          </Reveal>
-
-          {/* ── Two description cards aligned under each figure ── */}
-          <div className="grid md:grid-cols-2 gap-5">
-            {/* Left — Sosok #1 */}
-            <Reveal delay={180} from="left">
-              <div className="rounded-3xl bg-slate-900 border border-slate-800 hover:border-orange-500/40 transition-all duration-400 p-5 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
-                    <Flame size={15} className="text-orange-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Penyebab Utama</p>
-                    <h3 className="text-sm font-black text-white leading-tight">Pembuka Lahan dengan Api</h3>
-                  </div>
-                </div>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4">
-                  Membakar adalah cara tercepat dan termurah membuka lahan. Satu hektar gambut
-                  bisa bersih dalam hitungan jam — tanpa alat berat, tanpa izin resmi.
-                  Asap yang menyebar ke jutaan orang tidak masuk hitungan mereka.
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { label: "Lebih murah", val: "95%", sub: "vs alat berat" },
-                    { label: "Waktu bakar", val: "3 jam", sub: "per hektar" },
-                    { label: "Musim puncak", val: "Jul–Okt", sub: "kemarau" },
-                  ].map(s => (
-                    <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
-                      <p className="text-sm font-black text-orange-400 tabular-nums">{s.val}</p>
-                      <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
-                      <p className="text-[9px] text-slate-600">{s.sub}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Right — Sosok #2 */}
-            <Reveal delay={240} from="right">
-              <div className="rounded-3xl bg-slate-900 border border-slate-800 hover:border-red-500/40 transition-all duration-400 p-5 hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-                    <ShieldCheck size={15} className="text-red-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-red-400 uppercase tracking-widest">Kekuatan Regulasi</p>
-                    <h3 className="text-sm font-black text-white leading-tight">Korporasi &amp; Pembiaran Sistemik</h3>
-                  </div>
-                </div>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4">
-                  Konsesi perkebunan dan HPH yang tidak mengawasi subkontraktor, ditambah penegakan
-                  hukum yang lemah, menciptakan impunitas berulang. Lahan gambut yang
-                  seharusnya dilindungi — tetap terbakar tiap musim kemarau.
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { label: "Konsesi aktif", val: "5.300+", sub: "di lahan gambut" },
-                    { label: "Repeat offender", val: "70%", sub: "titik api 2023" },
-                    { label: "Denda maks", val: "Rp 10M", sub: "jarang dieksekusi" },
-                  ].map(s => (
-                    <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
-                      <p className="text-sm font-black text-red-400 tabular-nums">{s.val}</p>
-                      <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
-                      <p className="text-[9px] text-slate-600">{s.sub}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Source note */}
-          <Reveal delay={300}>
-            <p className="text-center text-xs text-slate-700 mt-8 max-w-2xl mx-auto leading-relaxed">
-              Data: Global Forest Watch · KLHK Rekap Karhutla 2023 · Sipongi KLHK.
-              Angka bersifat indikatif untuk konteks edukatif.
-            </p>
-          </Reveal>
         </div>
       </section>
 
