@@ -374,8 +374,14 @@ function drawFrame(
 
   c.fillStyle="#ffffff";
   c.textAlign="center";
-  const ispuFontSize=ispu>=300?280:ispu>=100?310:340;
+  // Auto-fit font size so ISPU number never overflows 70% of card width
+  const maxNumW = CW * 0.72;
+  let ispuFontSize = ispu >= 300 ? 280 : ispu >= 100 ? 310 : 340;
   c.font=`900 ${ispuFontSize}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  while(c.measureText(String(ispu)).width > maxNumW && ispuFontSize > 160){
+    ispuFontSize -= 10;
+    c.font=`900 ${ispuFontSize}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+  }
   c.fillText(String(ispu),CW/2,720);
 
   // Accent underline — centered
@@ -502,26 +508,26 @@ function drawFrame(
   c.fillStyle="#94a3b8";c.font="18px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
   c.textAlign="center";c.fillText("Scan untuk cek real-time",qrX+qrSize/2,qrY+qrSize+26);
 
-  // Speech bubble (right of QR)
+  // Speech bubble (right of QR) — always white/light background
   const sbX=qrX+qrSize+28;
   const sbY=qrY;
   const sbW=cdW-qrSize-52-80;
   const sbH=qrSize;
-  // Bubble body
+  // Bubble body — white bg always
   rr(c,sbX,sbY,sbW,sbH,20);
-  c.fillStyle=`rgba(${ar},${ag},${ab},0.08)`;c.fill();
-  c.strokeStyle=th.accent+"55";c.lineWidth=1.5;c.stroke();
+  c.fillStyle="#f8fafc";c.fill();
+  c.strokeStyle="#e2e8f0";c.lineWidth=1.5;c.stroke();
   // Bubble tail (pointing left toward QR)
-  c.fillStyle=`rgba(${ar},${ag},${ab},0.08)`;
+  c.fillStyle="#f8fafc";
   c.beginPath();c.moveTo(sbX,sbY+40);c.lineTo(sbX-20,sbY+55);c.lineTo(sbX,sbY+70);c.closePath();c.fill();
 
-  // CTA text in bubble
+  // CTA text in bubble — always dark slate regardless of theme
   const ctaLines=[
     "Pantau udara kotamu",
     "setiap saat — gratis,",
     "tanpa install app!",
   ];
-  c.fillStyle=th.accent+"cc";
+  c.fillStyle="#1e293b";
   c.textAlign="left";
   const ctaFontSize=sbW<260?20:22;
   c.font=`bold ${ctaFontSize}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
