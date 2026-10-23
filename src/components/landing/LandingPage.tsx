@@ -212,109 +212,111 @@ export function LandingPage() {
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="text-center text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Karhutla bukan hanya soal api. Ada manusia di baliknya — yang memilih membakar lahan
-              karena murah dan cepat, dan yang memilih menutup mata demi kepentingan lain.
-              Kenali mereka.
+            <p className="text-center text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Karhutla bukan hanya soal api. Ada dua sosok yang secara bersamaan menolak
+              pembakaran hutan — dengan kekuasaan, keberanian, dan tanggung jawab yang berbeda.
             </p>
           </Reveal>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Card 1 — gambar asli */}
-            <Reveal delay={100} from="left">
-              <div className="group relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
-                {/* Image */}
-                <div className="relative h-64 sm:h-72 overflow-hidden">
-                  <Image
-                    src="/penyebab-karhutla-1.png"
-                    alt="Sosok penyebab karhutla"
-                    fill
-                    className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
-                  {/* Badge */}
-                  <div className="absolute top-4 left-4 bg-orange-500/90 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
-                    Penyebab #1
+          {/* ── Full-width image: both figures together ── */}
+          <Reveal delay={140}>
+            <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 shadow-2xl shadow-orange-500/10 mb-8">
+              {/* Aspect ratio container — image is 1536×1024 = 3:2 */}
+              <div className="relative w-full" style={{ paddingBottom: "66.67%" }}>
+                <Image
+                  src="/penyebab-karhutla-1.png"
+                  alt="Dua sosok yang menolak kebakaran hutan"
+                  fill
+                  className="object-contain object-center"
+                  sizes="(max-width: 1024px) 100vw, 960px"
+                  priority
+                />
+                {/* Left label */}
+                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-orange-500/90 backdrop-blur-sm text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full">
+                  Sosok #1
+                </div>
+                {/* Right label */}
+                <div className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-red-600/90 backdrop-blur-sm text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full">
+                  Sosok #2
+                </div>
+                {/* Bottom gradient for text legibility */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-slate-950 to-transparent" />
+              </div>
+            </div>
+          </Reveal>
+
+          {/* ── Two description cards aligned under each figure ── */}
+          <div className="grid md:grid-cols-2 gap-5">
+            {/* Left — Sosok #1 */}
+            <Reveal delay={180} from="left">
+              <div className="rounded-3xl bg-slate-900 border border-slate-800 hover:border-orange-500/40 transition-all duration-400 p-5 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
+                    <Flame size={15} className="text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Penyebab Utama</p>
+                    <h3 className="text-sm font-black text-white leading-tight">Pembuka Lahan dengan Api</h3>
                   </div>
                 </div>
-                {/* Text */}
-                <div className="p-5">
-                  <h3 className="text-lg font-black text-white mb-2">Pembuka Lahan dengan Api</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed mb-3">
-                    Membakar lahan jauh lebih murah daripada menggunakan alat berat. Satu hektar bisa
-                    dibersihkan dalam beberapa jam. Biaya nyaris nol. Asap yang muncul? Itu urusan
-                    orang lain — begitu pikir mereka.
-                  </p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { label: "Biaya hemat", val: "95%", sub: "vs alat berat" },
-                      { label: "Waktu kerja", val: "3 jam", sub: "per hektar" },
-                      { label: "Musim puncak", val: "Jul–Okt", sub: "kemarau" },
-                    ].map(s => (
-                      <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
-                        <p className="text-sm font-black text-orange-400 tabular-nums">{s.val}</p>
-                        <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
-                        <p className="text-[9px] text-slate-600">{s.sub}</p>
-                      </div>
-                    ))}
-                  </div>
+                <p className="text-sm text-slate-400 leading-relaxed mb-4">
+                  Membakar adalah cara tercepat dan termurah membuka lahan. Satu hektar gambut
+                  bisa bersih dalam hitungan jam — tanpa alat berat, tanpa izin resmi.
+                  Asap yang menyebar ke jutaan orang tidak masuk hitungan mereka.
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { label: "Lebih murah", val: "95%", sub: "vs alat berat" },
+                    { label: "Waktu bakar", val: "3 jam", sub: "per hektar" },
+                    { label: "Musim puncak", val: "Jul–Okt", sub: "kemarau" },
+                  ].map(s => (
+                    <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
+                      <p className="text-sm font-black text-orange-400 tabular-nums">{s.val}</p>
+                      <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
+                      <p className="text-[9px] text-slate-600">{s.sub}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </Reveal>
 
-            {/* Card 2 — sosok kedua (placeholder bergaya sama) */}
-            <Reveal delay={180} from="right">
-              <div className="group relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-red-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/10">
-                {/* Placeholder visual */}
-                <div className="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-red-950 via-slate-900 to-slate-950 flex items-center justify-center">
-                  {/* Smoke rings as visual metaphor */}
-                  {[0, 1, 2].map(i => (
-                    <div key={i} className="absolute rounded-full border border-red-500/20"
-                      style={{ width: `${(i + 1) * 100}px`, height: `${(i + 1) * 100}px`,
-                        animation: `ping ${2 + i * 0.7}s cubic-bezier(0,0,0.2,1) infinite`,
-                        animationDelay: `${i * 0.6}s` }} />
-                  ))}
-                  <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-                      <Flame size={28} className="text-red-400" />
-                    </div>
-                    <span className="text-xs font-bold text-red-400/60 uppercase tracking-widest">Sosok Kedua</span>
+            {/* Right — Sosok #2 */}
+            <Reveal delay={240} from="right">
+              <div className="rounded-3xl bg-slate-900 border border-slate-800 hover:border-red-500/40 transition-all duration-400 p-5 hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                    <ShieldCheck size={15} className="text-red-400" />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
-                  <div className="absolute top-4 left-4 bg-red-600/90 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
-                    Penyebab #2
+                  <div>
+                    <p className="text-[10px] font-bold text-red-400 uppercase tracking-widest">Kekuatan Regulasi</p>
+                    <h3 className="text-sm font-black text-white leading-tight">Korporasi &amp; Pembiaran Sistemik</h3>
                   </div>
                 </div>
-                {/* Text */}
-                <div className="p-5">
-                  <h3 className="text-lg font-black text-white mb-2">Korporasi &amp; Pembiaran Sistemik</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed mb-3">
-                    Konsesi perkebunan dan HPH yang tidak mengawasi subkontraktor, ditambah penegakan
-                    hukum yang lemah, menciptakan impunitas. Lahan gambut dalam yang seharusnya tidak
-                    boleh dibakar — tetap terbakar tiap tahun.
-                  </p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { label: "Konsesi aktif", val: "5.300+", sub: "di lahan gambut" },
-                      { label: "Repeat offender", val: "70%", sub: "titik api 2023" },
-                      { label: "Denda max", val: "Rp 10 M", sub: "jarang dieksekusi" },
-                    ].map(s => (
-                      <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
-                        <p className="text-sm font-black text-red-400 tabular-nums">{s.val}</p>
-                        <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
-                        <p className="text-[9px] text-slate-600">{s.sub}</p>
-                      </div>
-                    ))}
-                  </div>
+                <p className="text-sm text-slate-400 leading-relaxed mb-4">
+                  Konsesi perkebunan dan HPH yang tidak mengawasi subkontraktor, ditambah penegakan
+                  hukum yang lemah, menciptakan impunitas berulang. Lahan gambut yang
+                  seharusnya dilindungi — tetap terbakar tiap musim kemarau.
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { label: "Konsesi aktif", val: "5.300+", sub: "di lahan gambut" },
+                    { label: "Repeat offender", val: "70%", sub: "titik api 2023" },
+                    { label: "Denda maks", val: "Rp 10M", sub: "jarang dieksekusi" },
+                  ].map(s => (
+                    <div key={s.label} className="bg-slate-800/60 rounded-2xl p-2.5 text-center">
+                      <p className="text-sm font-black text-red-400 tabular-nums">{s.val}</p>
+                      <p className="text-[10px] text-slate-400 leading-tight">{s.label}</p>
+                      <p className="text-[9px] text-slate-600">{s.sub}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </Reveal>
           </div>
 
-          {/* Bottom note */}
+          {/* Source note */}
           <Reveal delay={300}>
-            <p className="text-center text-xs text-slate-600 mt-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-center text-xs text-slate-700 mt-8 max-w-2xl mx-auto leading-relaxed">
               Data: Global Forest Watch · KLHK Rekap Karhutla 2023 · Sipongi KLHK.
               Angka bersifat indikatif untuk konteks edukatif.
             </p>
