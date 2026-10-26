@@ -16,6 +16,7 @@ export function ThemeToggle() {
     const next = !dark;
     setDark(next);
     document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", next);
     try { localStorage.setItem("eduair-theme", next ? "dark" : "light"); } catch { /* ignore */ }
   };
 

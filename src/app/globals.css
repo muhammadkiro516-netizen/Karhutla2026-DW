@@ -23,9 +23,14 @@ body {
   color: #0f172a;
 }
 
-/* Dark mode — only when explicitly toggled */
-[data-theme="dark"] {
+/* Dark mode — when data-theme="dark" on <html> (also adds class="dark" for Tailwind) */
+[data-theme="dark"],
+.dark {
   color-scheme: dark;
+}
+
+[data-theme="dark"] body,
+.dark body {
   background: #0f172a;
   color: #f1f5f9;
 }

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: "Pantau kualitas udara dan status sekolah akibat karhutla dengan data NASA real-time.",
 };
 
-const themeScript = `(function(){try{var t=localStorage.getItem('eduair-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();`;
+const themeScript = `(function(){try{var t=localStorage.getItem('eduair-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');document.documentElement.classList.add('dark');}}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="antialiased bg-white text-slate-900">
+      <body className="antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
         <SwRegister />
         <SWRProvider>
           {children}
