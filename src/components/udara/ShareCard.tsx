@@ -425,7 +425,7 @@ function drawFrame(
   // ── Character — drawn LAST (after card) so always visible ──
   // Positioned bottom-right, peeking above card top edge
   // ── White card ──
-  const cdX=52,cdY=CH*.57,cdW=CW-104,cdH=CH-cdY-90;
+  const cdX=52,cdY=CH*.54,cdW=CW-104,cdH=CH-cdY-60;
   c.save();
   c.shadowColor="rgba(0,0,0,0.18)";c.shadowBlur=70;c.shadowOffsetY=18;
   rr(c,cdX,cdY,cdW,cdH,56);c.fillStyle="#fff";c.fill();
@@ -451,40 +451,40 @@ function drawFrame(
     {l:"Kelembapan",v:rh},
     {l:"Sekolah",v:school},
   ];
-  const gW=(cdW-64)/3,gH=152,gSX=cdX+32,gSY=cdY+124;
+  const gW=(cdW-64)/3,gH=132,gSX=cdX+32,gSY=cdY+116;
   stats.forEach((s,i)=>{
     const col=i%3,row=Math.floor(i/3);
     const bx=gSX+col*gW+4,by=gSY+row*gH+4;
-    rr(c,bx,by,gW-8,gH-12,18);
+    rr(c,bx,by,gW-8,gH-10,18);
     c.fillStyle=col===0?`rgba(${ar},${ag},${ab},0.07)`:"#f8fafc";c.fill();
     const cx2=bx+(gW-8)/2;
-    c.fillStyle="#94a3b8";c.font="21px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-    c.textAlign="center";c.fillText(s.l.toUpperCase(),cx2,by+40);
+    c.fillStyle="#94a3b8";c.font="19px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+    c.textAlign="center";c.fillText(s.l.toUpperCase(),cx2,by+32);
     c.fillStyle=i===5?th.accent:"#0f172a";
-    c.font=`bold ${s.v.length>7?28:36}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
-    c.fillText(s.v,cx2,by+96);
+    c.font=`bold ${s.v.length>7?26:32}px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif`;
+    c.fillText(s.v,cx2,by+82);
   });
 
   // date strip
-  const dY=gSY+2*gH+18;
-  rr(c,cdX+42,dY,cdW-84,62,14);c.fillStyle="#f1f5f9";c.fill();
-  c.fillStyle="#64748b";c.font="25px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.textAlign="center";c.fillText(dateStr,cCX,dY+40);
+  const dY=gSY+2*gH+12;
+  rr(c,cdX+42,dY,cdW-84,56,14);c.fillStyle="#f1f5f9";c.fill();
+  c.fillStyle="#64748b";c.font="24px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  c.textAlign="center";c.fillText(dateStr,cCX,dY+36);
 
   // URL
-  rr(c,cdX+42,dY+78,cdW-84,52,12);c.fillStyle="#f8fafc";c.fill();
-  c.fillStyle="#94a3b8";c.font="21px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  c.fillText("eduair.vercel.app/udara?kota="+city.id,cCX,dY+112);
+  rr(c,cdX+42,dY+68,cdW-84,48,12);c.fillStyle="#f8fafc";c.fill();
+  c.fillStyle="#94a3b8";c.font="20px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  c.fillText("eduair.vercel.app/udara?kota="+city.id,cCX,dY+100);
 
-  // footer
-  const fY=dY+148;
+  // footer separator
+  const fY=dY+126;
   c.strokeStyle="#f1f5f9";c.lineWidth=1.5;c.beginPath();
   c.moveTo(cdX+56,fY);c.lineTo(cdX+cdW-56,fY);c.stroke();
 
   // ── QR + character CTA section ──
-  const qrSize=140;
+  const qrSize=150;
   const qrX=cdX+52;
-  const qrY=fY+20;
+  const qrY=fY+16;
 
   // QR code box
   rr(c,qrX,qrY,qrSize,qrSize,16);
