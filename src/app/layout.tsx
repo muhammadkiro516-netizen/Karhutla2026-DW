@@ -15,15 +15,10 @@ export const metadata: Metadata = {
   description: "Pantau kualitas udara dan status sekolah akibat karhutla dengan data NASA real-time.",
 };
 
-const themeScript = `(function(){try{var t=localStorage.getItem('eduair-theme');var d=t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(d){document.documentElement.setAttribute('data-theme','dark');document.documentElement.classList.add('dark');}}catch(e){}})();`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={plusJakarta.variable}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body className="antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <body className="antialiased bg-white text-slate-900">
         <SwRegister />
         <SWRProvider>
           {children}

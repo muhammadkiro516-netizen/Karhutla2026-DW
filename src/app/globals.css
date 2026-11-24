@@ -1,9 +1,6 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* ─── Tailwind v4: class-based dark mode ─── */
-@custom-variant dark (&:where(.dark, .dark *, [data-theme=dark], [data-theme=dark] *));
-
 @theme {
   --color-ispu-baik:              #16a34a;
   --color-ispu-sedang:            #2563eb;
@@ -16,119 +13,30 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-
-/* ─── CSS variables for theming ─── */
-:root {
-  --bg-page:      #ffffff;
-  --bg-card:      #ffffff;
-  --bg-surface:   #f8fafc;
-  --bg-surface2:  #f1f5f9;
-  --text-primary: #0f172a;
-  --text-muted:   #64748b;
-  --border-color: #e2e8f0;
-  color-scheme: light;
-}
-
-.dark {
-  --bg-page:      #0f172a;
-  --bg-card:      #0f172a;
-  --bg-surface:   #1e293b;
-  --bg-surface2:  #334155;
-  --text-primary: #f1f5f9;
-  --text-muted:   #94a3b8;
-  --border-color: #1e293b;
-  color-scheme: dark;
-}
+html { -webkit-text-size-adjust: 100%; color-scheme: light; }
 
 body {
   font-family: var(--font-plus-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.2s ease;
+  background: #ffffff;
+  color: #0f172a;
 }
-
-/* ─── Global component overrides using CSS variables ───────────────────
-   Applied with [data-theme="dark"] so they toggle ON and OFF cleanly
-   when the attribute is added/removed — no !important wars.
-─────────────────────────────────────────────────────────────────────── */
-
-/* White cards */
-[data-theme="dark"] .bg-white {
-  background-color: #0f172a;
-  border-color: #1e293b;
-  color: #f1f5f9;
-}
-
-/* Light slate surfaces */
-[data-theme="dark"] .bg-slate-50  { background-color: #1e293b; }
-[data-theme="dark"] .bg-slate-100 { background-color: #1e293b; }
-[data-theme="dark"] .bg-slate-200 { background-color: #334155; }
-
-/* Colored light surfaces */
-[data-theme="dark"] .bg-red-50     { background-color: #450a0a; }
-[data-theme="dark"] .bg-amber-50   { background-color: #451a03; }
-[data-theme="dark"] .bg-orange-50  { background-color: #431407; }
-[data-theme="dark"] .bg-blue-50    { background-color: #172554; }
-[data-theme="dark"] .bg-emerald-50 { background-color: #052e16; }
-[data-theme="dark"] .bg-green-50   { background-color: #052e16; }
-[data-theme="dark"] .bg-rose-50    { background-color: #4c0519; }
-
-/* Text */
-[data-theme="dark"] .text-slate-900 { color: #f1f5f9; }
-[data-theme="dark"] .text-slate-800 { color: #e2e8f0; }
-[data-theme="dark"] .text-slate-700 { color: #cbd5e1; }
-[data-theme="dark"] .text-slate-600 { color: #94a3b8; }
-[data-theme="dark"] .text-slate-500 { color: #64748b; }
-[data-theme="dark"] .text-slate-400 { color: #94a3b8; }
-[data-theme="dark"] .text-slate-300 { color: #475569; }
-
-/* Borders */
-[data-theme="dark"] .border-slate-100 { border-color: #1e293b; }
-[data-theme="dark"] .border-slate-200 { border-color: #334155; }
-[data-theme="dark"] .border-red-100   { border-color: #7f1d1d; }
-[data-theme="dark"] .border-amber-100 { border-color: #78350f; }
-[data-theme="dark"] .border-blue-100  { border-color: #1e3a8a; }
-[data-theme="dark"] .border-emerald-100 { border-color: #14532d; }
-
-/* Accent text — keep readable on dark bg */
-[data-theme="dark"] .text-red-700    { color: #fca5a5; }
-[data-theme="dark"] .text-red-600    { color: #f87171; }
-[data-theme="dark"] .text-amber-700  { color: #fcd34d; }
-[data-theme="dark"] .text-amber-600  { color: #fbbf24; }
-[data-theme="dark"] .text-orange-700 { color: #fdba74; }
-[data-theme="dark"] .text-blue-700   { color: #93c5fd; }
-[data-theme="dark"] .text-blue-600   { color: #60a5fa; }
-[data-theme="dark"] .text-emerald-600 { color: #6ee7b7; }
-[data-theme="dark"] .text-green-700  { color: #86efac; }
-[data-theme="dark"] .text-rose-600   { color: #fb7185; }
-
-/* ─────────────────────────────────────────────────────────────────────── */
 
 .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
 
-/* ── Leaflet ── */
+/* Leaflet */
 .leaflet-container {
   border-radius: var(--radius-card);
   font-family: var(--font-plus-jakarta);
-}
-[data-theme="dark"] .leaflet-tile {
-  filter: brightness(0.65) invert(0.9) contrast(0.8) hue-rotate(185deg) saturate(0.35);
 }
 .leaflet-popup-content-wrapper {
   border-radius: 0.875rem !important;
   box-shadow: 0 8px 32px rgba(0,0,0,.15) !important;
 }
-[data-theme="dark"] .leaflet-popup-content-wrapper {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
-}
 .leaflet-popup-content { margin: .75rem 1rem; font-size: .8125rem; line-height: 1.5; }
 
-/* ── Map markers ── */
 .marker-fire {
   display: flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
