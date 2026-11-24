@@ -1,6 +1,6 @@
-// PyroAlert Karhutla '26 Service Worker — v2
-// v2: landing page at /, no root redirect cached
-const CACHE = "pyroalert-v2";
+// PyroAlert Karhutla '26 Service Worker — v3
+// v3: dark mode fix — force cache bust
+const CACHE = "pyroalert-v3";
 const PRECACHE = ["/udara", "/sekolah", "/titik-api", "/posko"];
 // Note: "/" (landing page) intentionally NOT precached to avoid
 // caching any redirect responses. It's always fetched from network.
