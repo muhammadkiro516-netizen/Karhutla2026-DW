@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* ─── Tailwind v4: class-based dark mode (supports both .dark class AND data-theme="dark") ─── */
+/* ─── Tailwind v4: class-based dark mode ─── */
 @custom-variant dark (&:where(.dark, .dark *, [data-theme=dark], [data-theme=dark] *));
 
 @theme {
@@ -18,89 +18,92 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 
+/* ─── CSS variables for theming ─── */
+:root {
+  --bg-page:      #ffffff;
+  --bg-card:      #ffffff;
+  --bg-surface:   #f8fafc;
+  --bg-surface2:  #f1f5f9;
+  --text-primary: #0f172a;
+  --text-muted:   #64748b;
+  --border-color: #e2e8f0;
+  color-scheme: light;
+}
+
+.dark {
+  --bg-page:      #0f172a;
+  --bg-card:      #0f172a;
+  --bg-surface:   #1e293b;
+  --bg-surface2:  #334155;
+  --text-primary: #f1f5f9;
+  --text-muted:   #94a3b8;
+  --border-color: #1e293b;
+  color-scheme: dark;
+}
+
 body {
   font-family: var(--font-plus-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #ffffff;
-  color: #0f172a;
-  transition: background-color 0.3s, color 0.3s;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.2s ease;
 }
 
-/* ─── Dark mode base ─── */
-.dark body {
-  background: #0f172a;
-  color: #f1f5f9;
-  color-scheme: dark;
-}
-
-/* ─── Global dark overrides ─────────────────────────────────────────────
-   These cover the many components that only have light-mode Tailwind classes.
-   We use attribute selectors on the .dark class applied to <html>.
-   Rules are ordered from most-specific (gradient cards, colored badges)
-   to least-specific (generic bg-white/bg-slate-* containers).
+/* ─── Global component overrides using CSS variables ───────────────────
+   Applied with [data-theme="dark"] so they toggle ON and OFF cleanly
+   when the attribute is added/removed — no !important wars.
 ─────────────────────────────────────────────────────────────────────── */
 
-/* Gradient cards (AirHero, etc.) — keep as-is, no override */
-.dark [class*="bg-gradient"] { /* intentionally empty — do not override */ }
-
-/* ── Generic white containers ── */
-.dark .bg-white {
-  background-color: #0f172a !important;
-  border-color: #1e293b !important;
+/* White cards */
+[data-theme="dark"] .bg-white {
+  background-color: #0f172a;
+  border-color: #1e293b;
   color: #f1f5f9;
 }
 
-/* ── Light slate surfaces ── */
-.dark .bg-slate-50 { background-color: #1e293b !important; }
-.dark .bg-slate-100 { background-color: #1e293b !important; }
-.dark .bg-slate-200 { background-color: #334155 !important; }
+/* Light slate surfaces */
+[data-theme="dark"] .bg-slate-50  { background-color: #1e293b; }
+[data-theme="dark"] .bg-slate-100 { background-color: #1e293b; }
+[data-theme="dark"] .bg-slate-200 { background-color: #334155; }
 
-/* ── Colored light surfaces (keep hue, darken) ── */
-.dark .bg-red-50    { background-color: #450a0a !important; }
-.dark .bg-amber-50  { background-color: #451a03 !important; }
-.dark .bg-orange-50 { background-color: #431407 !important; }
-.dark .bg-blue-50   { background-color: #172554 !important; }
-.dark .bg-emerald-50 { background-color: #052e16 !important; }
-.dark .bg-green-50  { background-color: #052e16 !important; }
-.dark .bg-rose-50   { background-color: #4c0519 !important; }
-.dark .bg-purple-50 { background-color: #2e1065 !important; }
+/* Colored light surfaces */
+[data-theme="dark"] .bg-red-50     { background-color: #450a0a; }
+[data-theme="dark"] .bg-amber-50   { background-color: #451a03; }
+[data-theme="dark"] .bg-orange-50  { background-color: #431407; }
+[data-theme="dark"] .bg-blue-50    { background-color: #172554; }
+[data-theme="dark"] .bg-emerald-50 { background-color: #052e16; }
+[data-theme="dark"] .bg-green-50   { background-color: #052e16; }
+[data-theme="dark"] .bg-rose-50    { background-color: #4c0519; }
 
-/* ── Text colors ── */
-.dark .text-slate-900 { color: #f1f5f9 !important; }
-.dark .text-slate-800 { color: #e2e8f0 !important; }
-.dark .text-slate-700 { color: #cbd5e1 !important; }
-.dark .text-slate-600 { color: #94a3b8 !important; }
-.dark .text-slate-500 { color: #64748b !important; }
-.dark .text-slate-400 { color: #475569 !important; }
-.dark .text-slate-300 { color: #334155 !important; }
+/* Text */
+[data-theme="dark"] .text-slate-900 { color: #f1f5f9; }
+[data-theme="dark"] .text-slate-800 { color: #e2e8f0; }
+[data-theme="dark"] .text-slate-700 { color: #cbd5e1; }
+[data-theme="dark"] .text-slate-600 { color: #94a3b8; }
+[data-theme="dark"] .text-slate-500 { color: #64748b; }
+[data-theme="dark"] .text-slate-400 { color: #94a3b8; }
+[data-theme="dark"] .text-slate-300 { color: #475569; }
 
-/* ── Border colors ── */
-.dark .border-slate-50  { border-color: #0f172a !important; }
-.dark .border-slate-100 { border-color: #1e293b !important; }
-.dark .border-slate-200 { border-color: #334155 !important; }
-.dark .border-red-100   { border-color: #7f1d1d !important; }
-.dark .border-amber-100 { border-color: #78350f !important; }
-.dark .border-orange-100 { border-color: #7c2d12 !important; }
-.dark .border-blue-100  { border-color: #1e3a8a !important; }
-.dark .border-emerald-100 { border-color: #14532d !important; }
+/* Borders */
+[data-theme="dark"] .border-slate-100 { border-color: #1e293b; }
+[data-theme="dark"] .border-slate-200 { border-color: #334155; }
+[data-theme="dark"] .border-red-100   { border-color: #7f1d1d; }
+[data-theme="dark"] .border-amber-100 { border-color: #78350f; }
+[data-theme="dark"] .border-blue-100  { border-color: #1e3a8a; }
+[data-theme="dark"] .border-emerald-100 { border-color: #14532d; }
 
-/* ── Colored text (keep accent, adjust for dark bg) ── */
-.dark .text-red-700    { color: #fca5a5 !important; }
-.dark .text-red-600    { color: #f87171 !important; }
-.dark .text-amber-700  { color: #fcd34d !important; }
-.dark .text-amber-600  { color: #fbbf24 !important; }
-.dark .text-orange-700 { color: #fdba74 !important; }
-.dark .text-blue-700   { color: #93c5fd !important; }
-.dark .text-blue-600   { color: #60a5fa !important; }
-.dark .text-emerald-600 { color: #6ee7b7 !important; }
-.dark .text-green-700  { color: #86efac !important; }
-.dark .text-rose-600   { color: #fb7185 !important; }
-
-/* ── Shadow softening in dark ── */
-.dark .shadow-sm  { box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important; }
-.dark .shadow-md  { box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
-.dark .shadow-xl  { box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important; }
+/* Accent text — keep readable on dark bg */
+[data-theme="dark"] .text-red-700    { color: #fca5a5; }
+[data-theme="dark"] .text-red-600    { color: #f87171; }
+[data-theme="dark"] .text-amber-700  { color: #fcd34d; }
+[data-theme="dark"] .text-amber-600  { color: #fbbf24; }
+[data-theme="dark"] .text-orange-700 { color: #fdba74; }
+[data-theme="dark"] .text-blue-700   { color: #93c5fd; }
+[data-theme="dark"] .text-blue-600   { color: #60a5fa; }
+[data-theme="dark"] .text-emerald-600 { color: #6ee7b7; }
+[data-theme="dark"] .text-green-700  { color: #86efac; }
+[data-theme="dark"] .text-rose-600   { color: #fb7185; }
 
 /* ─────────────────────────────────────────────────────────────────────── */
 
@@ -112,14 +115,14 @@ body {
   border-radius: var(--radius-card);
   font-family: var(--font-plus-jakarta);
 }
-.dark .leaflet-tile {
+[data-theme="dark"] .leaflet-tile {
   filter: brightness(0.65) invert(0.9) contrast(0.8) hue-rotate(185deg) saturate(0.35);
 }
 .leaflet-popup-content-wrapper {
   border-radius: 0.875rem !important;
   box-shadow: 0 8px 32px rgba(0,0,0,.15) !important;
 }
-.dark .leaflet-popup-content-wrapper {
+[data-theme="dark"] .leaflet-popup-content-wrapper {
   background: #1e293b !important;
   color: #f1f5f9 !important;
 }

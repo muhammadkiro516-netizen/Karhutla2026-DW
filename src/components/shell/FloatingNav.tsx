@@ -41,8 +41,13 @@ function NavInner({ onOpenSettings }: FloatingNavProps) {
   const toggleDark = () => {
     const next = !dark;
     setDark(next);
-    document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", next);
+    if (next) {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      document.documentElement.classList.remove("dark");
+    }
     try { localStorage.setItem("eduair-theme", next ? "dark" : "light"); } catch { /**/ }
   };
 
