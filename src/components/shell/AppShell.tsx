@@ -36,21 +36,21 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="flex flex-col gap-4">
           <label className="flex items-center justify-between gap-4 text-sm">
             <div>
-              <p className="font-medium">Mode Rentan</p>
-              <p className="text-xs text-slate-400">Aktifkan untuk anak kecil, lansia, penderita asma, ibu hamil</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">Mode Rentan</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Aktifkan untuk anak kecil, lansia, penderita asma, ibu hamil</p>
             </div>
             <input type="checkbox" checked={vulnerable} onChange={e => setVulnerable(e.target.checked)}
               className="w-5 h-5 rounded accent-blue-500 flex-shrink-0" />
           </label>
           <label className="flex items-center justify-between gap-4 text-sm">
             <div>
-              <p className="font-medium">Hemat Data</p>
-              <p className="text-xs text-slate-400">Sembunyikan grafik, pakai teks saja</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">Hemat Data</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Sembunyikan grafik, pakai teks saja</p>
             </div>
             <input type="checkbox" checked={lowData} onChange={e => setLowData(e.target.checked)}
               className="w-5 h-5 rounded accent-blue-500 flex-shrink-0" />
           </label>
-          <a href="/about" className="text-sm text-blue-600 border-t border-slate-100 pt-3">
+          <a href="/about" className="text-sm text-blue-600 dark:text-blue-400 border-t border-slate-100 dark:border-slate-800 pt-3">
             Tentang PyroAlert &rarr;
           </a>
         </div>
